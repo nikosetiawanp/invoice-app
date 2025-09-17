@@ -10,6 +10,7 @@ import data from "../data.json";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PaymentStatus } from "../components/PaymentStatus";
+import { InvoiceForm } from "../components/InvoiceForm";
 
 function InvoicesPage() {
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
@@ -76,7 +77,8 @@ function InvoicesPage() {
                 {/* Left */}
                 <div className="flex flex-col gap-2">
                   <span className="text-[15px] font-bold text-08">
-                    #{invoice.id}
+                    <b className="text-07">#</b>
+                    {invoice.id}
                   </span>
                   <span className="text-[13px] text-06 font-medium">
                     Due {invoice.paymentDue}
@@ -123,6 +125,8 @@ function InvoicesPage() {
           </span>
         </div>
       )}
+
+      <InvoiceForm />
     </section>
   );
 }

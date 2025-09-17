@@ -143,7 +143,7 @@ function InvoiceDetailPage() {
       </div>
 
       {/* Bottom bar */}
-      <div className="bg-[#fff] w-full p-4 absolute bottom-0 left-0">
+      <div className="bg-[#fff] md:hidden w-full p-4 absolute bottom-0 left-0">
         <div className="fw-full gap-2 flex justify-center md:hidden">
           <Button variant="secondary">Edit</Button>
           <Button variant="destructive">Delete</Button>
