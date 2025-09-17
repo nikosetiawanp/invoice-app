@@ -1,42 +1,65 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@import "tailwindcss";
+
+@font-face {
+  font-family: "League Spartan";
+  src: url("./assets//fonts//LeagueSpartan-VariableFont_wght.ttf");
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+@theme {
+  --color-*: initial;
+  --font-sans: "League Spartan";
+
+  /* Primary */
+  --color-01: #7c5dfa;
+  --color-02: #9277ff;
+  --color-03: #1e2139;
+  --color-04: #252945;
+  --color-05: #dfe3fa;
+  --color-06: #888eb0;
+  --color-07: #7e88c3;
+  --color-08: #0c0e16;
+  --color-09: #ec5757;
+  --color-10: #9277ff;
+  --color-11: #f8f8fb;
+  --color-12: #141625;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@layer components {
+  /* Typography */
+  .text-heading-l {
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 33px;
+    letter-spacing: -1;
   }
-  to {
-    transform: rotate(360deg);
+  .text-heading-m {
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 22px;
+    letter-spacing: -0.75;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .text-heading-s {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: -0.25;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  .text-heading-s-variant {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 15px;
+    letter-spacing: -0.25;
+  }
+  .text-body {
+    font-weight: medium;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.1;
+  }
+  .text-body-variant {
+    font-weight: medium;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: -0.25;
+  }
 }
