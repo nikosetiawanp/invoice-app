@@ -1,4 +1,9 @@
+import { Select } from "radix-ui";
 import { Input } from "./ui/Input";
+import clsx from "clsx";
+
+import IconArrowDown from "../assets/icon-arrow-down.svg";
+import React from "react";
 
 function InvoiceForm() {
   return (
@@ -6,10 +11,11 @@ function InvoiceForm() {
       {/* Paper */}
       <div className="bg-[#fff] flex flex-col p-6 md:p-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
         {/* Layout */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 overflow-auto">
           <span className="text-[24px] font-bold text-08">New Invoice</span>
           {/* Sender */}
           <span className="text-[15px] font-bold text-01">Bill From</span>
+
           <Input
             id={"sender-street-address"}
             name="senderStreetAddress"
@@ -103,7 +109,9 @@ function InvoiceForm() {
           </div>
 
           {/* Invoice Date & Payment Terms */}
-          <div className="flex gap-5"></div>
+          <div className="flex gap-5">
+            <SelectPaymentTerm />
+          </div>
 
           <Input
             id={"project-description"}
@@ -121,6 +129,52 @@ function InvoiceForm() {
         </div>
       </div>
     </div>
+  );
+}
+
+function SelectPaymentTerm() {
+  return (
+    <Select.Root>
+      <div className="flex flex-col gap-2 w-full">
+        <label htmlFor={""} className="text-[13px] text-06">
+          Payment Terms
+        </label>
+        <Select.Trigger
+          className={clsx(
+            "flex justify-between items-center h-[48px] border border-05 rounded-sm p-4 text-[15px] font-bold text-08 placeholder:text-08/40 w-full hover:cursor-pointer hover:border-01"
+          )}
+        >
+          <Select.Value placeholder="Net 30 days" defaultValue={30} />
+          <Select.Icon>
+            <img src={IconArrowDown} alt="icon-arrow-down" />
+          </Select.Icon>
+        </Select.Trigger>
+      </div>
+      <Select.Portal>
+        <Select.Content
+          position="popper"
+          className="bg-[#fff] rounded-lg shadow-xl min-w-[var(--radix-select-trigger-width)]"
+        >
+          <Select.Viewport>
+            <Select.Group>
+              {[1, 7, 14, 30].map((term, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Select.Item
+                      value={term.toString()}
+                      className="py-3 px-5 font-bold text-08 hover:text-01 hover:cursor-pointer"
+                    >
+                      <Select.ItemText>Net {term} days</Select.ItemText>
+                    </Select.Item>
+                    <Select.Separator className="h-[1px] bg-05" />
+                  </React.Fragment>
+                );
+              })}
+            </Select.Group>
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
   );
 }
 
