@@ -3,9 +3,25 @@ import { Input } from "./ui/Input";
 import clsx from "clsx";
 
 import IconArrowDown from "../assets/icon-arrow-down.svg";
-import React from "react";
+import IconDelete from "../assets/icon-delete.svg";
+
+import React, { useState } from "react";
+import { Button } from "./ui/Button";
 
 function InvoiceForm() {
+  type Item = {
+    id: number;
+    name: string;
+    quantity: string;
+    price: string;
+  };
+  const [items, setItems] = useState<Item[]>([]);
+  const item = {
+    name: "",
+    quantity: 0,
+    price: 0,
+  };
+
   return (
     <div className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-[100px] lg:top-0">
       {/* Paper */}
@@ -126,6 +142,127 @@ function InvoiceForm() {
           <span className="text-[#777f98] text-[18px] font-bold">
             Item List
           </span>
+
+          {/* Mobile */}
+          <div className="flex flex-col gap-2 md:hidden">
+            {items.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4"
+                >
+                  <div className="col-span-4">
+                    <Input
+                      id={"item-name"}
+                      name={"itemName"}
+                      type={"text"}
+                      label={"Item Name"}
+                      value={""}
+                      onChange={() => {}}
+                    />
+                  </div>
+                  <Input
+                    id={"quantity"}
+                    name={"quantity"}
+                    type={"number"}
+                    label={"Qty."}
+                    value={""}
+                    onChange={() => {}}
+                  />
+                  <Input
+                    id={"price"}
+                    name={"price"}
+                    type={"number"}
+                    label={"Price"}
+                    value={""}
+                    onChange={() => {}}
+                  />
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[13px] text-07">Total</span>
+                    <div className="flex h-full items-center">
+                      <span className="text-[15px] text-07 font-bold">
+                        156.00
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex justify-center items-end h-full pb-2">
+                    <button className="hover:cursor-pointer hover:bg-11 p-3 rounded-full">
+                      <img src={IconDelete} alt="icon-delete" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Tablet & Desktop */}
+          <div className="hidden md:grid grid-cols-[4fr_1fr_2fr_1fr_1fr] gap-4 gap-y-2">
+            <span className="text-[13px] text-07">Item Name</span>{" "}
+            <span className="text-[13px] text-07">Qty.</span>
+            <span className="text-[13px] text-07">Price</span>
+            <span className="text-[13px] text-07 text-center">Total</span>
+            <span></span>
+            {items.map((item, index) => {
+              const deleteItem = () =>
+                setItems(
+                  items.filter((existingItem) => existingItem.id !== item.id)
+                );
+              return (
+                <React.Fragment key={index}>
+                  <Input
+                    id={""}
+                    name={""}
+                    type={"text"}
+                    label={""}
+                    value={""}
+                    onChange={() => {}}
+                  />
+                  <Input
+                    id={""}
+                    name={""}
+                    type={"text"}
+                    label={""}
+                    value={""}
+                    onChange={() => {}}
+                  />
+                  <Input
+                    id={""}
+                    name={""}
+                    type={"text"}
+                    label={""}
+                    value={""}
+                    onChange={() => {}}
+                  />
+                  <div className="flex justify-center items-center">
+                    <span className="text-[15px] text-06 font-bold text-center">
+                      150.00
+                    </span>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <button className="hover:cursor-pointer hover:bg-11 p-3 rounded-full">
+                      <img src={IconDelete} alt="icon-delete" />
+                    </button>
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          <Button
+            variant="secondary"
+            onClick={() => setItems((prev) => [...prev, item])}
+            fullWidth
+          >
+            + Add New Item
+          </Button>
+
+          <div className="flex justify-between">
+            <Button variant="secondary">Discard</Button>
+            <div className="flex gap-4">
+              <Button variant="tertiary">Save as Draft</Button>
+              <Button variant="primary">Save Changes</Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

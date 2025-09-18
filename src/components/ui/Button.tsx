@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-type Variant = "primary" | "secondary" | "destructive";
+type Variant = "primary" | "secondary" | "tertiary" | "destructive";
 
 type ButtonProps = {
   variant?: Variant;
@@ -23,6 +23,7 @@ function Button({
         "text-[15px] font-bold py-3 px-5 rounded-full hover:cursor-pointer",
         variant === "primary" && "bg-01 hover:bg-02 text-[#fff]",
         variant === "secondary" && "bg-11 hover:bg-05 text-07",
+        variant === "tertiary" && "bg-[#373b53] text-05 hover:bg-03",
         variant === "destructive" && "bg-09 text-[#fff]",
         fullWidth && "w-full",
         className
