@@ -2,7 +2,7 @@ import Logo from "../assets/logo.svg";
 
 function Sidebar() {
   return (
-    <aside className="flex md:flex-col h-[72px] md:h-[80px] lg:h-full w-full lg:w-[100px] lg:rounded-r-[20px] bg-[#373B53]">
+    <aside className="fixed left-0 top-0 z-50 flex md:flex-col h-[72px] md:h-[80px] lg:h-full w-full lg:w-[100px] lg:rounded-r-[20px] bg-[#373B53]">
       {/* Logo */}
       <div className="relative bg-01 rounded-r-[20px] h-[72px] md:h-[80px] lg:h-[100px] w-[72px] md:w-[80px] lg:w-[100px] flex flex-col justify-between">
         <div></div>

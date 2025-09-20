@@ -1,4 +1,4 @@
-import { DropdownMenu } from "radix-ui";
+import { Dialog, DropdownMenu } from "radix-ui";
 import IconArrowDown from "../assets/icon-arrow-down.svg";
 import IconArrowRight from "../assets/icon-arrow-right.svg";
 import IconCheck from "../assets/icon-check.svg";
@@ -38,13 +38,27 @@ function InvoicesPage() {
             appliedFilters={appliedFilters}
             setAppliedFilters={setAppliedFilters}
           />
-          <button className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
-            <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
-              <img src={IconPlus} alt="" />
-            </div>
-            <span className="hidden md:block">New Invoice</span>{" "}
-            <span className="md:hidden">New</span>
-          </button>
+
+          {/* Dialog */}
+
+          <Dialog.Root>
+            <Dialog.Trigger>
+              <button className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
+                <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
+                  <img src={IconPlus} alt="" />
+                </div>
+                <span className="hidden md:block">New Invoice</span>
+                <span className="md:hidden">New</span>
+              </button>
+            </Dialog.Trigger>
+
+            <Dialog.Portal>
+              <Dialog.Overlay className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
+              <Dialog.Content>
+                <InvoiceForm />
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
         </div>
       </header>
 
@@ -125,41 +139,9 @@ function InvoicesPage() {
           </span>
         </div>
       )}
-
-      <InvoiceForm />
     </section>
   );
 }
-
-type Invoice = {
-  id: string;
-  createdAt: string;
-  paymentDue: string;
-  description: string;
-  paymentTerms: string;
-  clientName: string;
-  clientEmail: string;
-  status: "paid" | "pending" | "draft";
-  senderAddress: {
-    street: string;
-    city: string;
-    postCode: string;
-    country: string;
-  };
-  clientAddress: {
-    street: string;
-    city: string;
-    postCode: string;
-    country: string;
-  };
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-    total: number;
-  }[];
-  total: number;
-};
 
 type FilterProps = {
   appliedFilters: string[];
