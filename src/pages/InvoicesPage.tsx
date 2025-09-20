@@ -147,6 +147,7 @@ type FilterProps = {
   appliedFilters: string[];
   setAppliedFilters: React.Dispatch<React.SetStateAction<string[]>>;
 };
+
 function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
   const filters = ["Draft", "Pending", "Paid"];
   return (
@@ -175,7 +176,11 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
               <DropdownMenu.Item
                 key={index}
                 className="hover:cursor-pointer group flex items-center gap-4"
-                onClick={() => applyFilter()}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  applyFilter();
+                }}
+                // onClick={() => applyFilter()}
               >
                 <div
                   className={clsx(

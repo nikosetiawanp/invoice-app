@@ -8,6 +8,7 @@ type ButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
   fullWidth?: boolean;
+  type?: "button" | "submit" | "reset";
 };
 
 function Button({
@@ -16,6 +17,7 @@ function Button({
   onClick,
   className,
   fullWidth,
+  type,
 }: ButtonProps) {
   return (
     <button
@@ -29,6 +31,7 @@ function Button({
         className
       )}
       onClick={onClick}
+      type={type ?? "button"}
     >
       {children}
     </button>

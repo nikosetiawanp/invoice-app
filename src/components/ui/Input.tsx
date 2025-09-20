@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { FieldError } from "react-hook-form";
 
 type InputType =
   | "text"
@@ -23,31 +24,42 @@ type InputType =
 
 type InputProps = {
   id: string;
-  name: string;
   type: InputType;
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
   placeholder?: string;
+  error?: FieldError;
+  defaultValue?: any;
 };
 
-function Input({ id, type, label, value, onChange, placeholder }: InputProps) {
+function Input({ id, type, label, placeholder, error, ...rest }: InputProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
-      <label htmlFor={id} className="text-[13px] text-06">
-        {label}
-      </label>
+      <div className="flex justify-between items-center w-full">
+        <label
+          htmlFor={id}
+          className={clsx(
+            "text-[13px]",
+            !error && "text-07",
+            error && "text-09"
+          )}
+        >
+          {label}
+        </label>
+        <span className="text-[10px] text-09 font-semibold">
+          {error && error.message}
+        </span>
+      </div>
 
       <input
         id={id}
-        name={id}
         type={type}
         placeholder={placeholder}
         autoComplete="off"
-        value={value}
-        onChange={onChange}
+        {...rest}
         className={clsx(
-          "h-[48px] border border-05 rounded-sm p-4 text-[15px] font-bold text-08 placeholder:text-08/40 w-full"
+          "h-[48px] border rounded-sm p-4 text-[15px] font-bold text-08 placeholder:text-08/40 w-full",
+          !error && "border-05",
+          error && "border-09"
         )}
       />
     </div>
