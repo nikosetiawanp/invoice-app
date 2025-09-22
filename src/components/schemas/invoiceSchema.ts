@@ -13,7 +13,7 @@ export const InvoiceSchema = z.object({
   ]),
   clientName: z.string().min(1, "can't be empty"),
   clientEmail: z.email(),
-  status: z.enum(["paid", "pending", "draft"]),
+  status: z.enum(["paid", "pending", "draft"]).default("pending"),
   senderAddress: z.object({
     street: z.string().min(1, "can't be empty"),
     city: z.string().min(1, "can't be empty"),
@@ -29,8 +29,8 @@ export const InvoiceSchema = z.object({
   items: z.array(
     z.object({
       name: z.string().min(1, "can't be empty"),
-      quantity: z.number().min(0),
-      price: z.number().min(0),
+      quantity: z.number().min(1, "can't be empty"),
+      price: z.number().min(1, "can't be empty"),
     })
   ),
 });

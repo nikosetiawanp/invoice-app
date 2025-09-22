@@ -29,9 +29,18 @@ type InputProps = {
   placeholder?: string;
   error?: FieldError;
   defaultValue?: any;
+  hideErrorMessage?: boolean;
 };
 
-function Input({ id, type, label, placeholder, error, ...rest }: InputProps) {
+function Input({
+  id,
+  type,
+  label,
+  placeholder,
+  error,
+  hideErrorMessage,
+  ...rest
+}: InputProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex justify-between items-center w-full">
@@ -46,7 +55,7 @@ function Input({ id, type, label, placeholder, error, ...rest }: InputProps) {
           {label}
         </label>
         <span className="text-[10px] text-09 font-semibold">
-          {error && error.message}
+          {error && !hideErrorMessage && error.message}
         </span>
       </div>
 

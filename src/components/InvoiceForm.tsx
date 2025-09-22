@@ -5,7 +5,7 @@ import clsx from "clsx";
 import IconArrowDown from "../assets/icon-arrow-down.svg";
 import IconDelete from "../assets/icon-delete.svg";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 
 import {
@@ -19,14 +19,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { InvoiceSchema } from "./schemas/invoiceSchema";
 
 function InvoiceForm() {
-  type Item = {
-    id: number;
-    name: string;
-    quantity: string;
-    price: string;
-  };
-  const [items, setItems] = useState<Item[]>([]);
-
   const {
     register,
     handleSubmit,
@@ -35,6 +27,7 @@ function InvoiceForm() {
     formState: { errors },
   } = useForm<InvoiceSchema>({
     defaultValues: {
+      status: "pending",
       paymentTerms: 30,
       items: [],
     },
@@ -50,6 +43,15 @@ function InvoiceForm() {
     control,
     name: "items",
   });
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+  }, [window.innerWidth]);
+
+  const items = watch("items");
 
   return (
     <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
@@ -160,80 +162,68 @@ function InvoiceForm() {
         />
 
         <span className="text-[#777f98] text-[18px] font-bold">Item List</span>
+        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] md:grid-cols-[4fr_2fr_3fr_1fr_1fr] gap-4">
+          {screenWidth >= 768 && (
+            <React.Fragment>
+              <span className="text-[13px] text-07">Item Name</span>
+              <span className="text-[13px] text-07">Qty.</span>
+              <span className="text-[13px] text-07">Price</span>
+              <span className="text-[13px] text-07 text-left">Total</span>
+              <span className=""></span>
+            </React.Fragment>
+          )}
 
-        {/* Mobile */}
-        <div className="flex flex-col gap-2 md:hidden">
-          {items.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4"
-              >
-                <div className="col-span-4">
-                  <Input id={"item-name"} type={"text"} label={"Item Name"} />
-                </div>
-                <Input id={"quantity"} type={"number"} label={"Qty."} />
-                <Input id={"price"} type={"number"} label={"Price"} />
-                <div className="flex flex-col gap-2">
-                  <span className="text-[13px] text-07">Total</span>
-                  <div className="flex h-full items-center">
-                    <span className="text-[15px] text-07 font-bold">
-                      156.00
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-center items-end h-full pb-2">
-                  <button className="hover:cursor-pointer hover:bg-11 p-3 rounded-full">
-                    <img src={IconDelete} alt="icon-delete" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Tablet & Desktop */}
-        <div className="hidden md:grid grid-cols-[4fr_1fr_2fr_1fr_1fr] gap-4 gap-y-2">
-          <span className="text-[13px] text-07">Item Name</span>{" "}
-          <span className="text-[13px] text-07">Qty.</span>
-          <span className="text-[13px] text-07">Price</span>
-          <span className="text-[13px] text-07 text-left">Total</span>
-          <span></span>
           {fields.map((field, index) => {
             return (
               <React.Fragment key={index}>
+                <div
+                  className={clsx(
+                    "col-span-4 md:col-span-1",
+                    index > 0 && "mt-4 md:mt-0"
+                  )}
+                >
+                  <Input
+                    id={"item-name"}
+                    type={"text"}
+                    label={screenWidth < 768 ? "Item Name" : ""}
+                    {...register(`items.${index}.name` as const)}
+                    defaultValue={field.name}
+                    error={errors.items?.[index]?.name}
+                    hideErrorMessage
+                  />
+                </div>
                 <Input
-                  id={""}
-                  type={"text"}
-                  {...register(`items.${index}.name` as const)}
-                  defaultValue={field.name}
-                />
-                <Input
-                  id={""}
+                  id={"quantity"}
                   type={"number"}
-                  placeholder="0"
+                  label={screenWidth < 768 ? "Qty." : ""}
                   {...register(`items.${index}.quantity` as const, {
                     valueAsNumber: true,
                   })}
                   defaultValue={field.quantity}
+                  error={errors.items?.[index]?.quantity}
+                  hideErrorMessage
                 />
                 <Input
-                  id={""}
+                  id={"price"}
                   type={"number"}
+                  label={screenWidth < 768 ? "Price" : ""}
                   placeholder="0.00"
-                  {...register(`items.${index}.quantity` as const, {
+                  {...register(`items.${index}.price` as const, {
                     valueAsNumber: true,
                   })}
                   defaultValue={field.price}
+                  error={errors.items?.[index]?.price}
+                  hideErrorMessage
                 />
-                <div className="flex justify-left items-center">
-                  <span className="text-[15px] text-06 font-bold text-left">
-                    {/* {(
-                      watchItems[index].quantity * watchItems[index].price
-                    ).toFixed(2)} */}
-                  </span>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[13px] text-07 md:hidden">Total</span>
+                  <div className="flex h-full items-center">
+                    <span className="text-[15px] text-07 font-bold">
+                      {items?.[index]?.price * items?.[index]?.quantity || 0}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-end h-full pb-2">
                   <button
                     className="hover:cursor-pointer hover:bg-11 p-3 rounded-full"
                     onClick={() => remove(index)}
@@ -259,7 +249,7 @@ function InvoiceForm() {
           <div className="flex gap-4">
             <Button variant="tertiary">Save as Draft</Button>
             <Button variant="primary" onClick={() => submit()} type="button">
-              Save Changes
+              Save & Send
             </Button>
           </div>
         </div>
@@ -272,10 +262,12 @@ type SelectPaymentTermProps = {
   field: ControllerRenderProps<InvoiceSchema, "paymentTerms">;
 };
 function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Select.Root
       value={String(field.value)}
       onValueChange={(val) => field.onChange(Number(val))}
+      onOpenChange={(open) => setIsOpen(open)}
     >
       <div className="flex flex-col gap-2 w-full">
         <label htmlFor={""} className="text-[13px] text-06">
@@ -288,7 +280,11 @@ function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
         >
           <Select.Value />
           <Select.Icon>
-            <img src={IconArrowDown} alt="icon-arrow-down" />
+            <img
+              src={IconArrowDown}
+              alt="icon-arrow-down"
+              className={clsx(isOpen && "rotate-180")}
+            />
           </Select.Icon>
         </Select.Trigger>
       </div>

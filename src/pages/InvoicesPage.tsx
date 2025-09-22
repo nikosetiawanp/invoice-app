@@ -150,13 +150,18 @@ type FilterProps = {
 
 function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
   const filters = ["Draft", "Pending", "Paid"];
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenu.Trigger>
         <button className="text-08 text-heading-s flex items-center gap-4 hover:cursor-pointer">
           <span className="hidden lg:block">Filter by status</span>
           <span className="lg:hidden">Filter</span>
-          <img src={IconArrowDown} alt="icon-arrow-down" />
+          <img
+            src={IconArrowDown}
+            alt="icon-arrow-down"
+            className={clsx(isOpen && "rotate-180")}
+          />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -180,7 +185,6 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
                   e.preventDefault();
                   applyFilter();
                 }}
-                // onClick={() => applyFilter()}
               >
                 <div
                   className={clsx(
