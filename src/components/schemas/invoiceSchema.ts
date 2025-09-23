@@ -1,9 +1,9 @@
 import * as z from "zod/v4";
 
 export const InvoiceSchema = z.object({
-  //   id: z.string().min(1, "can't be empty"),
-  //   createdAt: z.string(),
-  //   paymentDue: z.string(),
+  id: z.string().min(1, "can't be empty"),
+  createdAt: z.string(),
+  paymentDue: z.string(),
   description: z.string().min(1, "can't be empty"),
   paymentTerms: z.union([
     z.literal(1),
@@ -26,13 +26,15 @@ export const InvoiceSchema = z.object({
     postCode: z.string().min(1, "can't be empty"),
     country: z.string().min(1, "can't be empty"),
   }),
-  items: z.array(
-    z.object({
-      name: z.string().min(1, "can't be empty"),
-      quantity: z.number().min(1, "can't be empty"),
-      price: z.number().min(1, "can't be empty"),
-    })
-  ),
+  items: z
+    .array(
+      z.object({
+        name: z.string().min(1, "can't be empty"),
+        quantity: z.number().min(1, "can't be empty"),
+        price: z.number().min(1, "can't be empty"),
+      })
+    )
+    .min(1),
 });
 
 export type InvoiceSchema = z.infer<typeof InvoiceSchema>;

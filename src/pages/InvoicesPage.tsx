@@ -6,14 +6,31 @@ import IconPlus from "../assets/icon-plus.svg";
 import IllustrationEmpty from "../assets/illustration-empty.svg";
 import clsx from "clsx";
 
-import data from "../data.json";
-import { useState } from "react";
+import defaultData from "../data.json";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { InvoiceForm } from "../components/InvoiceForm";
+import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
 
 function InvoicesPage() {
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
+  const [invoices, setInvoices] = useState<InvoiceSchema[]>([]);
+
+  function getData() {
+    const storedInvoices = localStorage.getItem("invoices");
+    // Get data from localStorage
+    if (!storedInvoices) {
+      localStorage.setItem("invoices", JSON.stringify(defaultData));
+      setInvoices(JSON.parse(storedInvoices));
+    } else {
+      setInvoices(JSON.parse(storedInvoices));
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <section className="flex flex-col items-center w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px]">
@@ -40,16 +57,15 @@ function InvoicesPage() {
           />
 
           {/* Dialog */}
-
           <Dialog.Root>
             <Dialog.Trigger>
-              <button className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
+              <div className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
                 <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
                   <img src={IconPlus} alt="" />
                 </div>
                 <span className="hidden md:block">New Invoice</span>
                 <span className="md:hidden">New</span>
-              </button>
+              </div>
             </Dialog.Trigger>
 
             <Dialog.Portal>
@@ -64,7 +80,11 @@ function InvoicesPage() {
 
       {/* Invoices */}
       <div className="flex flex-col w-full gap-4">
-        {data.map((invoice, index) => {
+        {invoices?.map((invoice, index) => {
+          const arrayOfTotals = invoice.items.map(
+            (item) => item.price * item.quantity
+          );
+          const total = arrayOfTotals.reduce((a, b) => a + b, 0);
           return (
             <Link key={index} to={"/invoices/" + invoice.id}>
               {/* Tablet & Desktop */}
@@ -79,7 +99,7 @@ function InvoicesPage() {
                   {invoice.clientName}
                 </span>
                 <span className="text-[15px] font-bold text-08 ml-auto">
-                  £ {invoice.total}
+                  £ {total}
                 </span>
                 <PaymentStatus
                   status={invoice.status as "paid" | "pending" | "draft"}
@@ -98,7 +118,7 @@ function InvoicesPage() {
                     Due {invoice.paymentDue}
                   </span>
                   <span className="text-[15px] font-bold text-08">
-                    £ {invoice.total}
+                    £ {total}
                   </span>
                 </div>
 
@@ -123,7 +143,7 @@ function InvoicesPage() {
       </div>
 
       {/* No Item */}
-      {data.length <= 0 && (
+      {invoices.length <= 0 && (
         <div className="flex flex-col items-center justify-center w-full max-w-[240px] h-full gap-4">
           <img
             className="mb-8"
@@ -154,7 +174,7 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
   return (
     <DropdownMenu.Root onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenu.Trigger>
-        <button className="text-08 text-heading-s flex items-center gap-4 hover:cursor-pointer">
+        <div className="text-08 text-heading-s flex items-center gap-4 hover:cursor-pointer">
           <span className="hidden lg:block">Filter by status</span>
           <span className="lg:hidden">Filter</span>
           <img
@@ -162,7 +182,7 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
             alt="icon-arrow-down"
             className={clsx(isOpen && "rotate-180")}
           />
-        </button>
+        </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content className="bg-[#fff] p-6 rounded-lg shadow-xl flex flex-col gap-2 w-[200px]">
