@@ -20,6 +20,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { InvoiceSchema } from "./schemas/invoiceSchema";
 
 import { generateUniqueId } from "../utils/idHelper";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Calendar } from "./ui/calendar";
+
+import { format } from "date-fns";
+
+import IconCalendar from "../assets/icon-calendar.svg";
 
 function InvoiceForm() {
   const {
@@ -157,7 +163,14 @@ function InvoiceForm() {
           </div>
 
           {/* Invoice Date & Payment Terms */}
+
           <div className="flex gap-5">
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor={""} className="text-[13px] text-06">
+                Invoice Date
+              </label>
+              <DatePicker />
+            </div>
             <Controller
               name="paymentTerms"
               control={control}
@@ -279,6 +292,7 @@ type SelectPaymentTermProps = {
 };
 function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Select.Root
       value={String(field.value)}
@@ -337,4 +351,39 @@ function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
   );
 }
 
+function DatePicker() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date>();
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger>
+        <Button
+          data-empty={!date}
+          className="flex data-[empty=true]:text-05 items-center text-nowrap justify-between bg-white border border-05 rounded-sm w-full text-08 max-h-[46px]"
+          // className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+        >
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          <img src={IconCalendar} alt="icon-calendar" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-auto p-0 border-0 shadow-none z-50 bg-[#fff]"
+        side="bottom"
+      >
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(date) => {
+            setDate(date);
+            setOpen(false);
+          }}
+          buttonVariant={"default"}
+          className={"shadow-lg rounded-xl font-sans"}
+          showOutsideDays
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
 export { InvoiceForm };
