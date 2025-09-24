@@ -1,7 +1,6 @@
 import defaultData from "../data.json";
 
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
-import { useNavigate } from "react-router-dom";
 
 function createInvoice(data: InvoiceSchema) {
   const existing = JSON.parse(localStorage.getItem("invoices") || "[]");

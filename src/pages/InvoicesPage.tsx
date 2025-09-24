@@ -1,12 +1,11 @@
-import { Dialog, DropdownMenu } from "radix-ui";
+import { DropdownMenu } from "radix-ui";
 import IconArrowDown from "../assets/icon-arrow-down.svg";
 import IconArrowRight from "../assets/icon-arrow-right.svg";
 import IconCheck from "../assets/icon-check.svg";
-import IconPlus from "../assets/icon-plus.svg";
 import IllustrationEmpty from "../assets/illustration-empty.svg";
 import clsx from "clsx";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { InvoiceForm } from "../components/InvoiceForm";
@@ -14,14 +13,11 @@ import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
 import { getInvoices } from "../utils/localStorageHelper";
 import { format } from "date-fns";
 import { calculateDueDate } from "../utils/dateHelper";
+import { useQuery } from "@tanstack/react-query";
 
 function InvoicesPage() {
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
-  const [invoices, setInvoices] = useState<InvoiceSchema[]>([]);
-
-  useEffect(() => {
-    setInvoices(getInvoices());
-  }, []);
+  const query = useQuery({ queryKey: ["invoices"], queryFn: getInvoices });
 
   return (
     <section className="flex flex-col items-center w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px]">
@@ -37,7 +33,7 @@ function InvoicesPage() {
           <span className="text-body text-06 md:hidden">7 invoices</span>
           {/* Text Desktop */}
           <span className="text-body text-06 hidden md:block">
-            There are {invoices.length} total invoices
+            There are {query.data?.length} total invoices
           </span>
         </div>
         {/* Right */}
@@ -49,30 +45,12 @@ function InvoicesPage() {
 
           {/* Dialog */}
           <InvoiceForm />
-          {/* <Dialog.Root>
-            <Dialog.Trigger>
-              <div className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
-                <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
-                  <img src={IconPlus} alt="" />
-                </div>
-                <span className="hidden md:block">New Invoice</span>
-                <span className="md:hidden">New</span>
-              </div>
-            </Dialog.Trigger>
-
-            <Dialog.Portal>
-              <Dialog.Overlay className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
-              <Dialog.Content>
-                <InvoiceForm />
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root> */}
         </div>
       </header>
 
       {/* Invoices */}
       <div className="flex flex-col w-full gap-4">
-        {invoices?.map((invoice, index) => {
+        {query.data?.map((invoice: InvoiceSchema, index: number) => {
           const arrayOfTotals = invoice.items?.map(
             (item) => item.price * item.quantity
           );
@@ -85,11 +63,11 @@ function InvoicesPage() {
                   #{invoice.id}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
+                  Due{" "}
                   {format(
                     calculateDueDate(invoice?.createdAt, invoice?.paymentTerms),
                     "dd MMM yyyy"
                   )}
-                  {/* Due {invoice.paymentDue} */}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
                   {invoice.clientName}
@@ -149,7 +127,7 @@ function InvoicesPage() {
       </div>
 
       {/* No Item */}
-      {invoices.length <= 0 && (
+      {query.data?.length <= 0 && (
         <div className="flex flex-col items-center justify-center w-full max-w-[240px] h-full gap-4">
           <img
             className="mb-8"
