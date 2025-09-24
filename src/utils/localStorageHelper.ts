@@ -1,6 +1,7 @@
 import defaultData from "../data.json";
 
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
+import { useNavigate } from "react-router-dom";
 
 function createInvoice(data: InvoiceSchema) {
   const existing = JSON.parse(localStorage.getItem("invoices") || "[]");
@@ -30,4 +31,17 @@ function getInvoiceById(id: string) {
   return invoice;
 }
 
-export { createInvoice, getInvoices, getInvoiceById };
+function deleteInvoice(id: string) {
+  const invoices = JSON.parse(localStorage.getItem("invoices") || "[]");
+  const updated = invoices.filter(
+    (invoice: { id: string }) => invoice.id !== id
+  );
+
+  localStorage.setItem("invoices", JSON.stringify(updated));
+
+  window.location.href = "/invoices";
+}
+
+function updateInvoice() {}
+
+export { createInvoice, getInvoices, getInvoiceById, deleteInvoice };

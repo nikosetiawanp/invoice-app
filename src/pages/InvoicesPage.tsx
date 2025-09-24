@@ -6,13 +6,14 @@ import IconPlus from "../assets/icon-plus.svg";
 import IllustrationEmpty from "../assets/illustration-empty.svg";
 import clsx from "clsx";
 
-import defaultData from "../data.json";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { InvoiceForm } from "../components/InvoiceForm";
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
 import { getInvoices } from "../utils/localStorageHelper";
+import { format } from "date-fns";
+import { calculateDueDate } from "../utils/dateHelper";
 
 function InvoicesPage() {
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
@@ -36,7 +37,7 @@ function InvoicesPage() {
           <span className="text-body text-06 md:hidden">7 invoices</span>
           {/* Text Desktop */}
           <span className="text-body text-06 hidden md:block">
-            There are 7 total invoices
+            There are {invoices.length} total invoices
           </span>
         </div>
         {/* Right */}
@@ -47,7 +48,8 @@ function InvoicesPage() {
           />
 
           {/* Dialog */}
-          <Dialog.Root>
+          <InvoiceForm />
+          {/* <Dialog.Root>
             <Dialog.Trigger>
               <div className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
                 <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
@@ -64,7 +66,7 @@ function InvoicesPage() {
                 <InvoiceForm />
               </Dialog.Content>
             </Dialog.Portal>
-          </Dialog.Root>
+          </Dialog.Root> */}
         </div>
       </header>
 
@@ -83,6 +85,10 @@ function InvoicesPage() {
                   #{invoice.id}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
+                  {format(
+                    calculateDueDate(invoice?.createdAt, invoice?.paymentTerms),
+                    "dd MMM yyyy"
+                  )}
                   {/* Due {invoice.paymentDue} */}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
@@ -96,6 +102,7 @@ function InvoicesPage() {
                 />
                 <img src={IconArrowRight} alt="" />
               </div>
+
               {/* Mobile */}
               <div className="md:hidden flex justify-between items-center gap-8 rounded-lg p-4 w-full bg-[#fff] shadow-[0_10px_10px_10px_#48549F0D] border border-[#fff]  hover:border-01  hover:cursor-pointer">
                 {/* Left */}
@@ -105,10 +112,19 @@ function InvoicesPage() {
                     {invoice.id}
                   </span>
                   <span className="text-[13px] text-06 font-medium">
-                    Due {invoice.paymentDue}
+                    {format(
+                      calculateDueDate(
+                        invoice?.createdAt,
+                        invoice?.paymentTerms
+                      ),
+                      "dd MMM yyyy"
+                    )}
                   </span>
                   <span className="text-[15px] font-bold text-08">
-                    £ {total}
+                    £{" "}
+                    {invoice?.items
+                      .map((item) => item.quantity * item.price)
+                      .reduce((a, b) => a + b, 0)}
                   </span>
                 </div>
 

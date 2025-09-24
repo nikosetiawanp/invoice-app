@@ -2,6 +2,7 @@ import { Dialog, Select } from "radix-ui";
 import { Input } from "./ui/Input";
 import clsx from "clsx";
 
+import IconPlus from "../assets/icon-plus.svg";
 import IconArrowDown from "../assets/icon-arrow-down.svg";
 import IconDelete from "../assets/icon-delete.svg";
 
@@ -34,6 +35,7 @@ function InvoiceForm() {
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors },
   } = useForm<InvoiceSchema>({
     defaultValues: {
@@ -48,6 +50,7 @@ function InvoiceForm() {
   const onSubmit: SubmitHandler<InvoiceSchema> = (data) => {
     createInvoice(data);
     console.log("✅ validation success", data);
+    setOpen(false);
   };
   const onError: SubmitErrorHandler<InvoiceSchema> = (errors) => {
     console.log("❌ validation error", errors);
@@ -57,7 +60,7 @@ function InvoiceForm() {
     control,
     name: "items",
   });
-
+  const [open, setOpen] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -68,234 +71,269 @@ function InvoiceForm() {
   const items = watch("items");
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
-        {/* Layout */}
-        <div className="flex flex-col gap-5 overflow-auto scrollbar-hide">
-          <Dialog.Title className="text-[24px] font-bold text-08">
-            New Invoice
-          </Dialog.Title>
-          {/* Sender */}
-          <span className="text-[15px] font-bold text-01">Bill From</span>
-
-          <Input
-            id={"sender-street-address"}
-            type={"text"}
-            label={"Street Address"}
-            {...register("senderAddress.street")}
-            error={errors.senderAddress?.street}
-          />
-          <div className="md:flex grid grid-cols-2 gap-5">
-            <Input
-              id={"sender-city"}
-              type={"text"}
-              label={"City"}
-              {...register("senderAddress.city")}
-              error={errors.senderAddress?.city}
-            />
-            <Input
-              id={"sender-post-code"}
-              type={"text"}
-              label={"Post Code"}
-              {...register("senderAddress.postCode")}
-              error={errors.senderAddress?.postCode}
-            />
-
-            <div className="row-start-2 col-span-2 w-full">
-              <Input
-                id={"sender-country"}
-                type={"text"}
-                label={"Country"}
-                {...register("senderAddress.country")}
-                error={errors.senderAddress?.country}
-              />
-            </div>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger>
+        <div className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
+          <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
+            <img src={IconPlus} alt="" />
           </div>
-          {/* Client */}
-          <span className="text-[15px] font-bold text-01">Bill To</span>
-          <Input
-            id={"client-name"}
-            type={"text"}
-            label={"Client's Name"}
-            {...register("clientName")}
-            error={errors.clientName}
-          />
-          <Input
-            id={"client-email"}
-            type={"email"}
-            label={"Client's Email"}
-            placeholder="e.g. email@example.com"
-            {...register("clientEmail")}
-            error={errors.clientEmail}
-          />
-          <Input
-            id={"client-street-address"}
-            type={"text"}
-            label={"Street Address"}
-            {...register("clientAddress.street")}
-            error={errors.clientAddress?.street}
-          />
-          <div className="md:flex grid grid-cols-2 gap-5">
-            <Input
-              id={"client-city"}
-              type={"text"}
-              label={"City"}
-              {...register("clientAddress.city")}
-              error={errors.clientAddress?.city}
-            />
-            <Input
-              id={"client-post-code"}
-              type={"text"}
-              label={"Post Code"}
-              {...register("clientAddress.postCode")}
-              error={errors.clientAddress?.postCode}
-            />
-            <div className="row-start-2 col-span-2 w-full">
-              <Input
-                id={"client-country"}
-                type={"text"}
-                label={"Country"}
-                {...register("clientAddress.country")}
-                error={errors.clientAddress?.country}
-              />
-            </div>
-          </div>
+          <span className="hidden md:block">New Invoice</span>
+          <span className="md:hidden">New</span>
+        </div>
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
+        <Dialog.Content>
+          <form onSubmit={handleSubmit(onSubmit, onError)}>
+            <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
+              {/* Layout */}
+              <div className="flex flex-col gap-5 overflow-auto scrollbar-hide">
+                <Dialog.Title className="text-[24px] font-bold text-08">
+                  New Invoice
+                </Dialog.Title>
+                {/* Sender */}
+                <span className="text-[15px] font-bold text-01">Bill From</span>
 
-          {/* Invoice Date & Payment Terms */}
+                <Input
+                  id={"sender-street-address"}
+                  type={"text"}
+                  label={"Street Address"}
+                  {...register("senderAddress.street")}
+                  error={errors.senderAddress?.street}
+                />
+                <div className="md:flex grid grid-cols-2 gap-5">
+                  <Input
+                    id={"sender-city"}
+                    type={"text"}
+                    label={"City"}
+                    {...register("senderAddress.city")}
+                    error={errors.senderAddress?.city}
+                  />
+                  <Input
+                    id={"sender-post-code"}
+                    type={"text"}
+                    label={"Post Code"}
+                    {...register("senderAddress.postCode")}
+                    error={errors.senderAddress?.postCode}
+                  />
 
-          <div className="flex gap-5">
-            <div className="flex flex-col gap-2 w-full">
-              <label htmlFor={""} className="text-[13px] text-06">
-                Invoice Date
-              </label>
-              {/* <Controller
-                name="paymentTerms"
-                control={control}
-                render={({ field }) => <SelectPaymentTerm field={field} />}
-              /> */}
-
-              <Controller
-                name="createdAt"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                )}
-              />
-              {/* <DatePicker /> */}
-            </div>
-            <Controller
-              name="paymentTerms"
-              control={control}
-              render={({ field }) => <SelectPaymentTerm field={field} />}
-            />
-          </div>
-
-          <Input
-            id={"project-description"}
-            type={"text"}
-            label={"Project Description"}
-            placeholder="e.g. Graphic Design Service"
-            {...register("description")}
-            error={errors.description}
-          />
-
-          <span className="text-[#777f98] text-[18px] font-bold">
-            Item List
-          </span>
-          <div className="grid grid-cols-[1fr_2fr_1fr_1fr] md:grid-cols-[4fr_2fr_3fr_1fr_1fr] gap-4">
-            {screenWidth >= 768 && (
-              <React.Fragment>
-                <span className="text-[13px] text-07">Item Name</span>
-                <span className="text-[13px] text-07">Qty.</span>
-                <span className="text-[13px] text-07">Price</span>
-                <span className="text-[13px] text-07 text-left">Total</span>
-                <span className=""></span>
-              </React.Fragment>
-            )}
-
-            {fields.map((field, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <div
-                    className={clsx(
-                      "col-span-4 md:col-span-1",
-                      index > 0 && "mt-4 md:mt-0"
-                    )}
-                  >
+                  <div className="row-start-2 col-span-2 w-full">
                     <Input
-                      id={"item-name"}
+                      id={"sender-country"}
                       type={"text"}
-                      label={screenWidth < 768 ? "Item Name" : ""}
-                      {...register(`items.${index}.name` as const)}
-                      defaultValue={field.name}
-                      error={errors.items?.[index]?.name}
-                      hideErrorMessage
+                      label={"Country"}
+                      {...register("senderAddress.country")}
+                      error={errors.senderAddress?.country}
                     />
                   </div>
+                </div>
+                {/* Client */}
+                <span className="text-[15px] font-bold text-01">Bill To</span>
+                <Input
+                  id={"client-name"}
+                  type={"text"}
+                  label={"Client's Name"}
+                  {...register("clientName")}
+                  error={errors.clientName}
+                />
+                <Input
+                  id={"client-email"}
+                  type={"email"}
+                  label={"Client's Email"}
+                  placeholder="e.g. email@example.com"
+                  {...register("clientEmail")}
+                  error={errors.clientEmail}
+                />
+                <Input
+                  id={"client-street-address"}
+                  type={"text"}
+                  label={"Street Address"}
+                  {...register("clientAddress.street")}
+                  error={errors.clientAddress?.street}
+                />
+                <div className="md:flex grid grid-cols-2 gap-5">
                   <Input
-                    id={"quantity"}
-                    type={"number"}
-                    label={screenWidth < 768 ? "Qty." : ""}
-                    {...register(`items.${index}.quantity` as const, {
-                      valueAsNumber: true,
-                    })}
-                    defaultValue={field.quantity}
-                    error={errors.items?.[index]?.quantity}
-                    hideErrorMessage
+                    id={"client-city"}
+                    type={"text"}
+                    label={"City"}
+                    {...register("clientAddress.city")}
+                    error={errors.clientAddress?.city}
                   />
                   <Input
-                    id={"price"}
-                    type={"number"}
-                    label={screenWidth < 768 ? "Price" : ""}
-                    placeholder="0.00"
-                    {...register(`items.${index}.price` as const, {
-                      valueAsNumber: true,
-                    })}
-                    defaultValue={field.price}
-                    error={errors.items?.[index]?.price}
-                    hideErrorMessage
+                    id={"client-post-code"}
+                    type={"text"}
+                    label={"Post Code"}
+                    {...register("clientAddress.postCode")}
+                    error={errors.clientAddress?.postCode}
                   />
-                  <div className="flex flex-col gap-2">
-                    <span className="text-[13px] text-07 md:hidden">Total</span>
-                    <div className="flex h-full items-center">
-                      <span className="text-[15px] text-07 font-bold">
-                        {items?.[index]?.price * items?.[index]?.quantity || 0}
+                  <div className="row-start-2 col-span-2 w-full">
+                    <Input
+                      id={"client-country"}
+                      type={"text"}
+                      label={"Country"}
+                      {...register("clientAddress.country")}
+                      error={errors.clientAddress?.country}
+                    />
+                  </div>
+                </div>
+
+                {/* Invoice Date & Payment Terms */}
+                <div className="flex gap-5">
+                  <div className="flex flex-col gap-2 w-full">
+                    <label htmlFor={""} className="text-[13px] text-06">
+                      Invoice Date
+                    </label>
+
+                    <Controller
+                      name="createdAt"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <Controller
+                    name="paymentTerms"
+                    control={control}
+                    render={({ field }) => <SelectPaymentTerm field={field} />}
+                  />
+                </div>
+
+                <Input
+                  id={"project-description"}
+                  type={"text"}
+                  label={"Project Description"}
+                  placeholder="e.g. Graphic Design Service"
+                  {...register("description")}
+                  error={errors.description}
+                />
+
+                <span className="text-[#777f98] text-[18px] font-bold">
+                  Item List
+                </span>
+                <div className="grid grid-cols-[1fr_2fr_1fr_1fr] md:grid-cols-[4fr_2fr_3fr_1fr_1fr] gap-4">
+                  {screenWidth >= 768 && (
+                    <React.Fragment>
+                      <span className="text-[13px] text-07">Item Name</span>
+                      <span className="text-[13px] text-07">Qty.</span>
+                      <span className="text-[13px] text-07">Price</span>
+                      <span className="text-[13px] text-07 text-left">
+                        Total
                       </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-center items-end h-full pb-2">
-                    <button
-                      className="hover:cursor-pointer hover:bg-11 p-3 rounded-full"
-                      onClick={() => remove(index)}
+                      <span className=""></span>
+                    </React.Fragment>
+                  )}
+
+                  {fields.map((field, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <div
+                          className={clsx(
+                            "col-span-4 md:col-span-1",
+                            index > 0 && "mt-4 md:mt-0"
+                          )}
+                        >
+                          <Input
+                            id={"item-name"}
+                            type={"text"}
+                            label={screenWidth < 768 ? "Item Name" : ""}
+                            {...register(`items.${index}.name` as const)}
+                            defaultValue={field.name}
+                            error={errors.items?.[index]?.name}
+                            hideErrorMessage
+                          />
+                        </div>
+                        <Input
+                          id={"quantity"}
+                          type={"number"}
+                          label={screenWidth < 768 ? "Qty." : ""}
+                          {...register(`items.${index}.quantity` as const, {
+                            valueAsNumber: true,
+                          })}
+                          defaultValue={field.quantity}
+                          error={errors.items?.[index]?.quantity}
+                          hideErrorMessage
+                        />
+                        <Input
+                          id={"price"}
+                          type={"number"}
+                          label={screenWidth < 768 ? "Price" : ""}
+                          placeholder="0.00"
+                          {...register(`items.${index}.price` as const, {
+                            valueAsNumber: true,
+                          })}
+                          defaultValue={field.price}
+                          error={errors.items?.[index]?.price}
+                          hideErrorMessage
+                        />
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[13px] text-07 md:hidden">
+                            Total
+                          </span>
+                          <div className="flex h-full items-center">
+                            <span className="text-[15px] text-07 font-bold">
+                              {items?.[index]?.price *
+                                items?.[index]?.quantity || 0}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex justify-center items-end h-full pb-2">
+                          <button
+                            className="hover:cursor-pointer hover:bg-11 p-3 rounded-full"
+                            onClick={() => remove(index)}
+                          >
+                            <img src={IconDelete} alt="icon-delete" />
+                          </button>
+                        </div>
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => append({ name: "", quantity: 0, price: 0 })}
+                  fullWidth
+                >
+                  + Add New Item
+                </Button>
+
+                <div className="flex justify-between">
+                  <Dialog.Close asChild>
+                    <Button variant="secondary">Discard</Button>
+                  </Dialog.Close>
+                  <div className="flex gap-4">
+                    <Button
+                      variant="tertiary"
+                      type="submit"
+                      onClick={() => {
+                        setValue("status", "draft");
+                        handleSubmit(onSubmit, onError);
+                      }}
                     >
-                      <img src={IconDelete} alt="icon-delete" />
-                    </button>
+                      Save as Draft
+                    </Button>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      onClick={() => {
+                        setValue("status", "pending");
+                        handleSubmit(onSubmit, onError);
+                      }}
+                    >
+                      Save & Send
+                    </Button>
                   </div>
-                </React.Fragment>
-              );
-            })}
-          </div>
-
-          <Button
-            variant="secondary"
-            onClick={() => append({ name: "", quantity: 0, price: 0 })}
-            fullWidth
-          >
-            + Add New Item
-          </Button>
-
-          <div className="flex justify-between">
-            <Button variant="secondary">Discard</Button>
-            <div className="flex gap-4">
-              <Button variant="tertiary">Save as Draft</Button>
-              <Button variant="primary" type="submit">
-                Save & Send
-              </Button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </form>
+          </form>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

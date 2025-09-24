@@ -3,17 +3,17 @@ import IconArrowLeft from "../assets/icon-arrow-left.svg";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { Button } from "../components/ui/Button";
 import React, { useEffect, useState } from "react";
-import { getInvoiceById } from "../utils/localStorageHelper";
+import { deleteInvoice, getInvoiceById } from "../utils/localStorageHelper";
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
 import { format } from "date-fns";
 import { calculateDueDate } from "../utils/dateHelper";
+import { Dialog } from "radix-ui";
 
 function InvoiceDetailPage() {
   const { id } = useParams();
   const [invoice, setInvoice] = useState<InvoiceSchema>();
 
   useEffect(() => {
-    id && console.log(getInvoiceById(id));
     id && setInvoice(getInvoiceById(id));
   }, []);
 
@@ -37,7 +37,7 @@ function InvoiceDetailPage() {
         </div>
         <div className="ml-auto gap-2 hidden md:flex">
           <Button variant="secondary">Edit</Button>
-          <Button variant="destructive">Delete</Button>
+          <DeleteInvoice id={id || ""} />
           <Button variant="primary">Mark as Paid</Button>
         </div>
       </header>
@@ -191,13 +191,42 @@ function InvoiceDetailPage() {
       <div className="bg-[#fff] md:hidden w-full p-4 absolute bottom-0 left-0">
         <div className="fw-full gap-2 flex justify-center md:hidden">
           <Button variant="secondary">Edit</Button>
-          <Button variant="destructive">Delete</Button>
+          <DeleteInvoice id={id || ""} />
           <Button variant="primary" fullWidth>
             Mark as Paid
           </Button>
         </div>
       </div>
     </section>
+  );
+}
+
+function DeleteInvoice({ id }: { id: string }) {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>
+        <Button variant="destructive">Delete</Button>
+      </Dialog.Trigger>
+      <Dialog.Overlay className="fixed flex p-8 justify-center items-center left-0 top-0 z-50 w-screen h-screen bg-[#000]/50">
+        <Dialog.Content className="flex flex-col justify-start bg-[#fff] rounded-lg p-8 max-w-[480px] md:p-12">
+          <Dialog.Title className="text-[24px] text-08 font-bold text-left">
+            Confirm Deletion
+          </Dialog.Title>
+          <Dialog.Description className="text-[13px] text-06 text-left">
+            Are you sure you want to delete invoice #{id}? This action cannot be
+            undone.
+          </Dialog.Description>
+          <div className="flex justify-end items-center w-full mt-4 gap-3">
+            <Dialog.Close asChild>
+              <Button variant="secondary">Cancel</Button>
+            </Dialog.Close>
+            <Button variant="destructive" onClick={() => deleteInvoice(id)}>
+              Delete
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Overlay>
+    </Dialog.Root>
   );
 }
 
