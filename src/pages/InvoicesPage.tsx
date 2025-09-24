@@ -12,24 +12,14 @@ import { Link } from "react-router-dom";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { InvoiceForm } from "../components/InvoiceForm";
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
+import { getInvoices } from "../utils/localStorageHelper";
 
 function InvoicesPage() {
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
   const [invoices, setInvoices] = useState<InvoiceSchema[]>([]);
 
-  function getData() {
-    const storedInvoices = localStorage.getItem("invoices");
-    // Get data from localStorage
-    if (!storedInvoices) {
-      localStorage.setItem("invoices", JSON.stringify(defaultData));
-      setInvoices(JSON.parse(storedInvoices));
-    } else {
-      setInvoices(JSON.parse(storedInvoices));
-    }
-  }
-
   useEffect(() => {
-    getData();
+    setInvoices(getInvoices());
   }, []);
 
   return (
@@ -81,7 +71,7 @@ function InvoicesPage() {
       {/* Invoices */}
       <div className="flex flex-col w-full gap-4">
         {invoices?.map((invoice, index) => {
-          const arrayOfTotals = invoice.items.map(
+          const arrayOfTotals = invoice.items?.map(
             (item) => item.price * item.quantity
           );
           const total = arrayOfTotals.reduce((a, b) => a + b, 0);
@@ -93,7 +83,7 @@ function InvoicesPage() {
                   #{invoice.id}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
-                  Due {invoice.paymentDue}
+                  {/* Due {invoice.paymentDue} */}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
                   {invoice.clientName}

@@ -2,10 +2,20 @@ import { Link, useParams } from "react-router-dom";
 import IconArrowLeft from "../assets/icon-arrow-left.svg";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { Button } from "../components/ui/Button";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getInvoiceById } from "../utils/localStorageHelper";
+import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
+import { format } from "date-fns";
+import { calculateDueDate } from "../utils/dateHelper";
 
 function InvoiceDetailPage() {
-  const { id } = useParams(); // id is a string
+  const { id } = useParams();
+  const [invoice, setInvoice] = useState<InvoiceSchema>();
+
+  useEffect(() => {
+    id && console.log(getInvoiceById(id));
+    id && setInvoice(getInvoiceById(id));
+  }, []);
 
   return (
     <section className="flex flex-col w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px]">
@@ -23,7 +33,7 @@ function InvoiceDetailPage() {
       <header className="w-full flex bg-[#fff] items-center text-07 font-medium p-6 rounded-lg bg-white shadow-[0_4px_10px_2px_#48549F0D]">
         <div className="w-full md:w-auto flex gap-2 justify-between md:justify-start items-center">
           <span className="text-[13px]">Status</span>
-          <PaymentStatus status={"paid"} />
+          {invoice?.status && <PaymentStatus status={invoice?.status} />}
         </div>
         <div className="ml-auto gap-2 hidden md:flex">
           <Button variant="secondary">Edit</Button>
@@ -38,15 +48,26 @@ function InvoiceDetailPage() {
         <div className="flex flex-col gap-8 md:flex-row justify-between items-start">
           {/* Left */}
           <div className="flex flex-col gap-2">
-            <span className="text-08 text-[15px] font-bold">#{id}</span>
-            <span className="text-[13px] text-07">Graphic Design</span>
+            <span className="text-08 text-[15px] font-bold">
+              <b className="text-06">#</b>
+              {invoice?.id}
+            </span>
+            <span className="text-[13px] text-07">{invoice?.description}</span>
           </div>
           {/* Right */}
           <div className="flex flex-col items-start md:items-end">
-            <span className="text-[13px] text-07">19 Union Terrace</span>
-            <span className="text-[13px] text-07">London</span>
-            <span className="text-[13px] text-07">E1 3EZ</span>
-            <span className="text-[13px] text-07">United Kingdom</span>
+            <span className="text-[13px] text-07">
+              {invoice?.senderAddress?.street}
+            </span>
+            <span className="text-[13px] text-07">
+              {invoice?.senderAddress?.city}
+            </span>
+            <span className="text-[13px] text-07">
+              {invoice?.senderAddress?.postCode}
+            </span>
+            <span className="text-[13px] text-07">
+              {invoice?.senderAddress?.country}
+            </span>
           </div>
         </div>
 
@@ -55,27 +76,45 @@ function InvoiceDetailPage() {
           {/* Invoice Date */}
           <div className="flex flex-col gap-1 col-start-1 row-start-1">
             <span className="text-[13px] text-07">Invoice Date</span>
-            <span className="text-[15px] font-bold text-08">21 Aug 2021</span>
+            <span className="text-[15px] font-bold text-08">
+              {invoice?.createdAt && format(invoice?.createdAt, "dd MMM yyyy")}
+            </span>
           </div>
           {/* Payment Due */}
           <div className="flex flex-col gap-1 col-start-1 row-start-2">
             <span className="text-[13px] text-07">Payment Due</span>
-            <span className="text-[15px] font-bold text-08">20 Sep 2021</span>
+            <span className="text-[15px] font-bold text-08">
+              {invoice?.createdAt &&
+                format(
+                  calculateDueDate(invoice?.createdAt, invoice?.paymentTerms),
+                  "dd MMM yyyy"
+                )}
+            </span>
           </div>
           <div className="flex flex-col gap-1 col-start-2 row-span-2">
             <span className="text-[13px] text-07">Bill To</span>
-            <span className="text-[15px] text-08 font-bold">Alex Grim</span>
+            <span className="text-[15px] text-08 font-bold">
+              {invoice?.clientName}
+            </span>
             <div className="flex flex-col gap-0">
-              <span className="text-[13px] text-07">84 Church Way</span>
-              <span className="text-[13px] text-07">Bradford</span>
-              <span className="text-[13px] text-07">BD1 9PB</span>
-              <span className="text-[13px] text-07">United Kingdom</span>
+              <span className="text-[13px] text-07">
+                {invoice?.clientAddress?.street}
+              </span>
+              <span className="text-[13px] text-07">
+                {invoice?.clientAddress?.city}
+              </span>
+              <span className="text-[13px] text-07">
+                {invoice?.clientAddress?.postCode}
+              </span>
+              <span className="text-[13px] text-07">
+                {invoice?.clientAddress?.country}
+              </span>
             </div>
           </div>
           <div className="flex flex-col gap-1 col-span-2 row-start-3 md:col-start-3 md:col-span-1 md:row-start-1">
             <span className="text-[13px] text-07">Sent to</span>
             <span className="text-[15px] text-08 font-bold">
-              alexgrim@gmail.com
+              {invoice?.clientEmail}
             </span>
           </div>
         </div>
@@ -84,19 +123,19 @@ function InvoiceDetailPage() {
         <div className="flex flex-col rounded-lg bg-11">
           {/* Items Mobile */}
           <div className="flex flex-col p-4 gap-4 md:hidden">
-            {[1, 2].map((item, index) => {
+            {invoice?.items.map((item, index) => {
               return (
                 <div key={index} className="flex justify-between items-center">
                   <div className="flex flex-col">
                     <span className="text-[15px] text-08 font-bold">
-                      Banner Design
+                      {item.name}
                     </span>
                     <span className="text-[15px] text-07 font-bold">
-                      £ 1 x 156.00
+                      £ {item.quantity} x {item.price}
                     </span>
                   </div>
                   <span className="text-[15px] text-08 font-bold">
-                    £ 156.00
+                    £ {item.quantity * item.price}
                   </span>
                 </div>
               );
@@ -115,20 +154,21 @@ function InvoiceDetailPage() {
               Total
             </span>
 
-            {[1, 2].map((item, index) => {
+            {/* Items Tablet & Desktop */}
+            {invoice?.items?.map((item, index) => {
               return (
                 <React.Fragment key={index}>
                   <span className="text-[15px] font-bold text-08">
-                    Banner Design
+                    {item.name}
                   </span>
                   <span className="text-[15px] text-07 font-bold text-center">
-                    2
+                    {item.quantity}
                   </span>
                   <span className="text-[15px] text-07 font-bold text-right">
-                    £ 200.00
+                    £ {item.price}
                   </span>
                   <span className="text-[15px] text-08 font-bold text-right">
-                    £ 400.00
+                    £ {item.quantity * item.price}
                   </span>
                 </React.Fragment>
               );
@@ -137,7 +177,12 @@ function InvoiceDetailPage() {
 
           <div className="flex justify-between items-center p-4 bg-04 rounded-b-lg">
             <span className="text-[13px] text-[#fff]">Grand Total</span>
-            <span className="text-[24px] text-[#fff] font-bold">£ 156.00</span>
+            <span className="text-[24px] text-[#fff] font-bold">
+              £{" "}
+              {invoice?.items
+                .map((item) => item.quantity * item.price)
+                .reduce((a, b) => a + b, 0)}
+            </span>
           </div>
         </div>
       </div>

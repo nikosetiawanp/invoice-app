@@ -26,6 +26,7 @@ import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 
 import IconCalendar from "../assets/icon-calendar.svg";
+import { createInvoice } from "../utils/localStorageHelper";
 
 function InvoiceForm() {
   const {
@@ -40,14 +41,12 @@ function InvoiceForm() {
       status: "pending",
       paymentTerms: 30,
       items: [],
-      createdAt: new Date().toISOString(),
     },
     resolver: zodResolver(InvoiceSchema),
   });
 
   const onSubmit: SubmitHandler<InvoiceSchema> = (data) => {
-    console.log("triggered");
-
+    createInvoice(data);
     console.log("✅ validation success", data);
   };
   const onError: SubmitErrorHandler<InvoiceSchema> = (errors) => {
@@ -169,7 +168,20 @@ function InvoiceForm() {
               <label htmlFor={""} className="text-[13px] text-06">
                 Invoice Date
               </label>
-              <DatePicker />
+              {/* <Controller
+                name="paymentTerms"
+                control={control}
+                render={({ field }) => <SelectPaymentTerm field={field} />}
+              /> */}
+
+              <Controller
+                name="createdAt"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                )}
+              />
+              {/* <DatePicker /> */}
             </div>
             <Controller
               name="paymentTerms"
@@ -351,19 +363,21 @@ function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
   );
 }
 
-function DatePicker() {
+type DatePickerProps = {
+  value?: Date;
+  onChange: (date?: Date) => void;
+};
+function DatePicker({ value, onChange }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date>();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
         <Button
-          data-empty={!date}
+          data-empty={!value}
           className="flex data-[empty=true]:text-05 items-center text-nowrap justify-between bg-white border border-05 rounded-sm w-full text-08 max-h-[46px]"
-          // className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
         >
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {value ? format(value, "PPP") : <span>Pick a date</span>}
           <img src={IconCalendar} alt="icon-calendar" />
         </Button>
       </PopoverTrigger>
@@ -373,14 +387,15 @@ function DatePicker() {
       >
         <Calendar
           mode="single"
-          selected={date}
+          selected={value}
           onSelect={(date) => {
-            setDate(date);
+            onChange(date);
             setOpen(false);
           }}
           buttonVariant={"default"}
           className={"shadow-lg rounded-xl font-sans"}
           showOutsideDays
+          disabled={{ after: new Date() }}
         />
       </PopoverContent>
     </Popover>
