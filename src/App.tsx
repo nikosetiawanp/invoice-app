@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   return (
-    <main className="flex flex-col lg:flex-row w-screen h-auto bg-11">
+    <main className="flex flex-col lg:flex-row w-screen min-h-screen h-auto bg-11">
       <Sidebar />
       <div className="flex justify-center w-full h-auto py-8 pb-26 md:pb-12 pt-[104px] px-6 md:py-12 md:pt-[128px] lg:py-16 lg:pl-[124px]">
         <QueryClientProvider client={new QueryClient()}>

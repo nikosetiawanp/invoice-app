@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { InvoiceForm } from "../components/InvoiceForm";
-import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
+import { InvoiceSchema } from "../components/schemas/invoiceSchema";
 import { getInvoices } from "../utils/localStorageHelper";
 import { format } from "date-fns";
 import { calculateDueDate } from "../utils/dateHelper";
@@ -18,6 +18,12 @@ import { useQuery } from "@tanstack/react-query";
 function InvoicesPage() {
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
   const query = useQuery({ queryKey: ["invoices"], queryFn: getInvoices });
+  const filteredInvoices =
+    appliedFilters.length === 0
+      ? query?.data
+      : query?.data?.filter((invoice: InvoiceSchema) =>
+          appliedFilters.includes(invoice.status)
+        );
 
   return (
     <section className="flex flex-col items-center w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px]">
@@ -50,7 +56,7 @@ function InvoicesPage() {
 
       {/* Invoices */}
       <div className="flex flex-col w-full gap-4">
-        {query.data?.map((invoice: InvoiceSchema, index: number) => {
+        {filteredInvoices?.map((invoice: InvoiceSchema, index: number) => {
           const arrayOfTotals = invoice.items?.map(
             (item) => item.price * item.quantity
           );
@@ -130,7 +136,7 @@ function InvoicesPage() {
       </div>
 
       {/* No Item */}
-      {query.data?.length <= 0 && (
+      {filteredInvoices?.length <= 0 && (
         <div className="flex flex-col items-center justify-center w-full max-w-[240px] h-full gap-4">
           <img
             className="mb-8"
@@ -156,7 +162,7 @@ type FilterProps = {
 };
 
 function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
-  const filters = ["Draft", "Pending", "Paid"];
+  const filters = ["draft", "pending", "paid"];
   const [isOpen, setIsOpen] = useState(false);
   return (
     <DropdownMenu.Root onOpenChange={(open) => setIsOpen(open)}>
@@ -202,7 +208,9 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
                 >
                   {checked && <img src={IconCheck} alt="icon-check" />}
                 </div>
-                <span className="text-[15px] font-bold mt-1">{filter}</span>
+                <span className="text-[15px] font-bold mt-1">
+                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                </span>
               </DropdownMenu.Item>
             );
           })}

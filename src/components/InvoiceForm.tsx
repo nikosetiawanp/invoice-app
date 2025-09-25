@@ -120,12 +120,12 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
       )}
 
       <Dialog.Portal>
-        <Dialog.Overlay className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
+        <Dialog.Overlay className="fixed w-screen h-full bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
         <Dialog.Content>
           <form onSubmit={handleSubmit(onSubmit as any, onError)}>
             <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
               {/* Layout */}
-              <div className="flex flex-col gap-5 overflow-auto scrollbar-hide">
+              <div className="flex flex-col gap-5 overflow-auto scrollbar-hide pb-20 md:pb-0">
                 {mode === "create" && (
                   <Dialog.Title className="text-[24px] font-bold text-08">
                     New Invoice
@@ -348,8 +348,9 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                   + Add New Item
                 </Button>
 
+                {/* Form actions mobile*/}
                 {mode === "create" && (
-                  <div className="flex justify-between">
+                  <div className="hidden md:flex justify-between w-full">
                     <Dialog.Close asChild>
                       <Button
                         variant="secondary"
@@ -384,7 +385,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                 )}
 
                 {mode === "update" && (
-                  <div className="flex gap-4 justify-end items-center w-full">
+                  <div className="hidden md:flex gap-4 justify-end items-center w-full">
                     <Dialog.Close asChild>
                       <Button
                         variant="secondary"
@@ -409,6 +410,71 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                     </Button>
                   </div>
                 )}
+
+                {/* Mobile */}
+                <div className="bg-[#fff] md:hidden w-screen p-4 fixed left-0 bottom-0 drop-shadow-2xl flex">
+                  {mode === "create" && (
+                    <div className="flex justify-end gap-4 w-full">
+                      <Dialog.Close asChild>
+                        <Button
+                          variant="secondary"
+                          onClick={() => reset(defaultValues)}
+                        >
+                          Discard
+                        </Button>
+                      </Dialog.Close>
+                      <div className="flex gap-4">
+                        <Button
+                          variant="tertiary"
+                          type="submit"
+                          onClick={() => {
+                            setValue("status", "draft");
+                            handleSubmit(onSubmit, onError);
+                          }}
+                        >
+                          Save as Draft
+                        </Button>
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          onClick={() => {
+                            setValue("status", "pending");
+                            handleSubmit(onSubmit, onError);
+                          }}
+                        >
+                          Save & Send
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {mode === "update" && (
+                    <div className="flex gap-4 justify-end items-center w-full">
+                      <Dialog.Close asChild>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            reset({
+                              ...invoice,
+                              createdAt: new Date(invoice?.createdAt as Date),
+                            });
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </Dialog.Close>
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        onClick={() => {
+                          handleSubmit(onSubmit, onError);
+                        }}
+                      >
+                        Save Changes
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </form>
@@ -520,4 +586,5 @@ function DatePicker({ value, onChange }: DatePickerProps) {
     </Popover>
   );
 }
+
 export { InvoiceForm };
