@@ -39,6 +39,22 @@ function deleteInvoice(id: string) {
   window.location.href = "/invoices";
 }
 
-// function updateInvoice() {}
+function updateInvoice(updatedInvoice: InvoiceSchema) {
+  const invoices = JSON.parse(localStorage.getItem("invoices") || "[]");
+  const index = invoices.findIndex(
+    (inv: { id: string }) => inv.id === updatedInvoice.id
+  );
 
-export { createInvoice, getInvoices, getInvoiceById, deleteInvoice };
+  if (index === -1) throw new Error("Invoice not found");
+
+  invoices[index] = updatedInvoice;
+  localStorage.setItem("invoices", JSON.stringify(invoices));
+}
+
+export {
+  createInvoice,
+  getInvoices,
+  getInvoiceById,
+  deleteInvoice,
+  updateInvoice,
+};

@@ -2,20 +2,35 @@ import { Link, useParams } from "react-router-dom";
 import IconArrowLeft from "../assets/icon-arrow-left.svg";
 import { PaymentStatus } from "../components/PaymentStatus";
 import { Button } from "../components/ui/Button";
-import React, { useEffect, useState } from "react";
-import { deleteInvoice, getInvoiceById } from "../utils/localStorageHelper";
+import React from "react";
+import {
+  deleteInvoice,
+  getInvoiceById,
+  updateInvoice,
+} from "../utils/localStorageHelper";
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
 import { format } from "date-fns";
 import { calculateDueDate } from "../utils/dateHelper";
 import { Dialog } from "radix-ui";
+import { InvoiceForm } from "../components/InvoiceForm";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function InvoiceDetailPage() {
   const { id } = useParams();
-  const [invoice, setInvoice] = useState<InvoiceSchema>();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    id && setInvoice(getInvoiceById(id));
-  }, []);
+  const { data: invoice } = useQuery<InvoiceSchema>({
+    queryKey: ["invoice", id],
+    queryFn: () => getInvoiceById(id!),
+    enabled: !!id,
+  });
+
+  const updateStatus = (updatedStatus: "pending" | "paid") => {
+    invoice && updateInvoice({ ...invoice, status: updatedStatus });
+    queryClient.invalidateQueries({
+      queryKey: ["invoice", invoice?.id],
+    });
+  };
 
   return (
     <section className="flex flex-col w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px]">
@@ -36,9 +51,20 @@ function InvoiceDetailPage() {
           {invoice?.status && <PaymentStatus status={invoice?.status} />}
         </div>
         <div className="ml-auto gap-2 hidden md:flex">
-          <Button variant="secondary">Edit</Button>
+          <InvoiceForm mode="update" invoice={invoice} />
+          {/* <Button variant="secondary">Edit</Button> */}
           <DeleteInvoice id={id || ""} />
-          <Button variant="primary">Mark as Paid</Button>
+
+          {invoice?.status === "draft" && (
+            <Button variant="primary" onClick={() => updateStatus("pending")}>
+              Mark as Pending
+            </Button>
+          )}
+          {invoice?.status === "pending" && (
+            <Button variant="primary" onClick={() => updateStatus("paid")}>
+              Mark as Paid
+            </Button>
+          )}
         </div>
       </header>
 
@@ -123,7 +149,7 @@ function InvoiceDetailPage() {
         <div className="flex flex-col rounded-lg bg-11">
           {/* Items Mobile */}
           <div className="flex flex-col p-4 gap-4 md:hidden">
-            {invoice?.items.map((item, index) => {
+            {invoice?.items?.map((item, index) => {
               return (
                 <div key={index} className="flex justify-between items-center">
                   <div className="flex flex-col">
@@ -142,6 +168,7 @@ function InvoiceDetailPage() {
             })}
           </div>
 
+          {/* Items Tablet & Desktop */}
           <div className="grid-cols-4 p-4 gap-4 hidden md:grid">
             <span className="text-[13px] text-07 font-medium">Item Name</span>
             <span className="text-[13px] text-07 font-medium text-center">
@@ -188,13 +215,20 @@ function InvoiceDetailPage() {
       </div>
 
       {/* Bottom bar */}
-      <div className="bg-[#fff] md:hidden w-full p-4 absolute bottom-0 left-0">
+      <div className="bg-[#fff] md:hidden w-full p-4 fixed bottom-0 left-0 shadow-2xl">
         <div className="fw-full gap-2 flex justify-center md:hidden">
-          <Button variant="secondary">Edit</Button>
+          <InvoiceForm mode="update" invoice={invoice} />
           <DeleteInvoice id={id || ""} />
-          <Button variant="primary" fullWidth>
-            Mark as Paid
-          </Button>
+          {invoice?.status === "draft" && (
+            <Button variant="primary" onClick={() => updateStatus("pending")}>
+              Mark as Pending
+            </Button>
+          )}
+          {invoice?.status === "pending" && (
+            <Button variant="primary" onClick={() => updateStatus("paid")}>
+              Mark as Paid
+            </Button>
+          )}
         </div>
       </div>
     </section>

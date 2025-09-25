@@ -44,7 +44,7 @@ function InvoicesPage() {
           />
 
           {/* Dialog */}
-          <InvoiceForm />
+          <InvoiceForm mode="create" />
         </div>
       </header>
 
@@ -59,8 +59,9 @@ function InvoicesPage() {
             <Link key={index} to={"/invoices/" + invoice.id}>
               {/* Tablet & Desktop */}
               <div className="hidden md:flex items-center gap-8 rounded-lg p-4 w-full bg-[#fff] shadow-[0_10px_10px_10px_#48549F0D] border border-[#fff]  hover:border-01  hover:cursor-pointer">
-                <span className="text-[15px] font-bold text-08">
-                  #{invoice.id}
+                <span className="text-[15px] font-bold text-08 w-[80px]">
+                  <b className="text-07">#</b>
+                  {invoice.id}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
                   Due{" "}

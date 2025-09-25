@@ -27,10 +27,28 @@ import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 
 import IconCalendar from "../assets/icon-calendar.svg";
-import { createInvoice } from "../utils/localStorageHelper";
+import { createInvoice, updateInvoice } from "../utils/localStorageHelper";
 import { useQueryClient } from "@tanstack/react-query";
 
-function InvoiceForm() {
+type InvoiceFormProps = {
+  mode: "create" | "update";
+  invoice?: InvoiceSchema;
+};
+
+function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
+  const defaultValues: InvoiceSchema = {
+    id: generateUniqueId(),
+    description: "",
+    paymentTerms: 30 as 1 | 7 | 14 | 30,
+    clientName: "",
+    clientEmail: "",
+    status: "pending",
+    senderAddress: { street: "", city: "", postCode: "", country: "" },
+    clientAddress: { street: "", city: "", postCode: "", country: "" },
+    items: [],
+    createdAt: new Date(),
+  };
+
   const queryClient = useQueryClient();
   const {
     register,
@@ -38,23 +56,26 @@ function InvoiceForm() {
     watch,
     control,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<InvoiceSchema>({
-    defaultValues: {
-      id: generateUniqueId(),
-      status: "pending",
-      paymentTerms: 30,
-      items: [],
-      createdAt: new Date(),
-    },
+    defaultValues: defaultValues,
     resolver: zodResolver(InvoiceSchema),
   });
 
   const onSubmit: SubmitHandler<InvoiceSchema> = (data) => {
-    createInvoice(data);
+    if (mode === "create") {
+      createInvoice(data);
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+    }
+
+    if (mode === "update") {
+      updateInvoice(data);
+      queryClient.invalidateQueries({ queryKey: ["invoice", data.id] });
+    }
+
     console.log("✅ validation success", data);
     setOpen(false);
-    queryClient.invalidateQueries({ queryKey: ["invoices"] });
   };
   const onError: SubmitErrorHandler<InvoiceSchema> = (errors) => {
     console.error("❌ validation error", errors);
@@ -72,19 +93,32 @@ function InvoiceForm() {
     window.addEventListener("resize", handleResize);
   }, [window.innerWidth]);
 
+  useEffect(() => {
+    if (mode === "update" && invoice) {
+      reset({ ...invoice, createdAt: new Date(invoice.createdAt as Date) });
+    }
+  }, [invoice, mode, reset]);
+
   const items = watch("items");
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger>
-        <div className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
+      {mode === "create" && (
+        <Dialog.Trigger className="flex items-center gap-4 p-2 pr-4 text-heading-s bg-01 hover:bg-02 text-[#fff] rounded-full hover:cursor-pointer">
           <div className="w-[32px] h-[32px] bg-[#fff] flex justify-center items-center rounded-full">
             <img src={IconPlus} alt="" />
           </div>
           <span className="hidden md:block">New Invoice</span>
           <span className="md:hidden">New</span>
-        </div>
-      </Dialog.Trigger>
+        </Dialog.Trigger>
+      )}
+
+      {mode === "update" && (
+        <Dialog.Trigger className="rounded-full">
+          <Button variant="secondary">Edit</Button>
+        </Dialog.Trigger>
+      )}
+
       <Dialog.Portal>
         <Dialog.Overlay className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
         <Dialog.Content>
@@ -92,9 +126,19 @@ function InvoiceForm() {
             <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
               {/* Layout */}
               <div className="flex flex-col gap-5 overflow-auto scrollbar-hide">
-                <Dialog.Title className="text-[24px] font-bold text-08">
-                  New Invoice
-                </Dialog.Title>
+                {mode === "create" && (
+                  <Dialog.Title className="text-[24px] font-bold text-08">
+                    New Invoice
+                  </Dialog.Title>
+                )}
+
+                {mode === "update" && (
+                  <Dialog.Title className="text-[24px] font-bold text-08">
+                    Edit <b className="text-06">#</b>
+                    {invoice?.id}
+                  </Dialog.Title>
+                )}
+
                 {/* Sender */}
                 <span className="text-[15px] font-bold text-01">Bill From</span>
 
@@ -187,7 +231,6 @@ function InvoiceForm() {
                     <label htmlFor={""} className="text-[13px] text-06">
                       Invoice Date
                     </label>
-
                     <Controller
                       name="createdAt"
                       control={control}
@@ -305,33 +348,67 @@ function InvoiceForm() {
                   + Add New Item
                 </Button>
 
-                <div className="flex justify-between">
-                  <Dialog.Close asChild>
-                    <Button variant="secondary">Discard</Button>
-                  </Dialog.Close>
-                  <div className="flex gap-4">
+                {mode === "create" && (
+                  <div className="flex justify-between">
+                    <Dialog.Close asChild>
+                      <Button
+                        variant="secondary"
+                        onClick={() => reset(defaultValues)}
+                      >
+                        Discard
+                      </Button>
+                    </Dialog.Close>
+                    <div className="flex gap-4">
+                      <Button
+                        variant="tertiary"
+                        type="submit"
+                        onClick={() => {
+                          setValue("status", "draft");
+                          handleSubmit(onSubmit, onError);
+                        }}
+                      >
+                        Save as Draft
+                      </Button>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        onClick={() => {
+                          setValue("status", "pending");
+                          handleSubmit(onSubmit, onError);
+                        }}
+                      >
+                        Save & Send
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {mode === "update" && (
+                  <div className="flex gap-4 justify-end items-center w-full">
+                    <Dialog.Close asChild>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          reset({
+                            ...invoice,
+                            createdAt: new Date(invoice?.createdAt as Date),
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </Dialog.Close>
                     <Button
-                      variant="tertiary"
                       type="submit"
-                      onClick={() => {
-                        setValue("status", "draft");
-                        handleSubmit(onSubmit as any, onError);
-                      }}
-                    >
-                      Save as Draft
-                    </Button>
-                    <Button
                       variant="primary"
-                      type="submit"
                       onClick={() => {
-                        setValue("status", "pending");
-                        handleSubmit(onSubmit as any, onError);
+                        handleSubmit(onSubmit, onError);
                       }}
                     >
-                      Save & Send
+                      Save Changes
                     </Button>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </form>
