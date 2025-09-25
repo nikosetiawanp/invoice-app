@@ -1,5 +1,3 @@
-import defaultData from "../data.json";
-
 import type { InvoiceSchema } from "../components/schemas/invoiceSchema";
 
 function createInvoice(data: InvoiceSchema) {
@@ -12,8 +10,8 @@ function getInvoices() {
   let storedInvoices = JSON.parse(localStorage.getItem("invoices") || "[]");
 
   if (storedInvoices.length === 0) {
-    localStorage.setItem("invoices", JSON.stringify(defaultData));
-    storedInvoices = defaultData;
+    localStorage.setItem("invoices", JSON.stringify([]));
+    storedInvoices = [];
   }
 
   return storedInvoices;
@@ -41,6 +39,6 @@ function deleteInvoice(id: string) {
   window.location.href = "/invoices";
 }
 
-function updateInvoice() {}
+// function updateInvoice() {}
 
 export { createInvoice, getInvoices, getInvoiceById, deleteInvoice };

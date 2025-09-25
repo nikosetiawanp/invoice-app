@@ -2,7 +2,8 @@ import * as z from "zod/v4";
 
 export const InvoiceSchema = z.object({
   id: z.string().min(1, "can't be empty"),
-  createdAt: z.date().transform((d) => d.toISOString().split("T")[0]),
+  createdAt: z.date().optional(),
+  // createdAt: z.date().transform((d) => d.toISOString().split("T")[0]),
   // paymentDue: z.string(),
   description: z.string().min(1, "can't be empty"),
   paymentTerms: z.union([
@@ -13,7 +14,7 @@ export const InvoiceSchema = z.object({
   ]),
   clientName: z.string().min(1, "can't be empty"),
   clientEmail: z.email(),
-  status: z.enum(["paid", "pending", "draft"]).default("pending"),
+  status: z.enum(["paid", "pending", "draft"]),
   senderAddress: z.object({
     street: z.string().min(1, "can't be empty"),
     city: z.string().min(1, "can't be empty"),

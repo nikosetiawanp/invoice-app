@@ -64,10 +64,11 @@ function InvoicesPage() {
                 </span>
                 <span className="text-[13px] text-06 font-medium">
                   Due{" "}
-                  {format(
-                    calculateDueDate(invoice?.createdAt, invoice?.paymentTerms),
-                    "dd MMM yyyy"
-                  )}
+                  {invoice?.createdAt &&
+                    format(
+                      calculateDueDate(invoice.createdAt, invoice.paymentTerms),
+                      "dd MMM yyyy"
+                    )}
                 </span>
                 <span className="text-[13px] text-06 font-medium">
                   {invoice.clientName}
@@ -90,13 +91,14 @@ function InvoicesPage() {
                     {invoice.id}
                   </span>
                   <span className="text-[13px] text-06 font-medium">
-                    {format(
-                      calculateDueDate(
-                        invoice?.createdAt,
-                        invoice?.paymentTerms
-                      ),
-                      "dd MMM yyyy"
-                    )}
+                    {invoice?.createdAt &&
+                      format(
+                        calculateDueDate(
+                          invoice.createdAt,
+                          invoice.paymentTerms
+                        ),
+                        "dd MMM yyyy"
+                      )}
                   </span>
                   <span className="text-[15px] font-bold text-08">
                     £{" "}

@@ -28,8 +28,10 @@ import { format } from "date-fns";
 
 import IconCalendar from "../assets/icon-calendar.svg";
 import { createInvoice } from "../utils/localStorageHelper";
+import { useQueryClient } from "@tanstack/react-query";
 
 function InvoiceForm() {
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -43,6 +45,7 @@ function InvoiceForm() {
       status: "pending",
       paymentTerms: 30,
       items: [],
+      createdAt: new Date(),
     },
     resolver: zodResolver(InvoiceSchema),
   });
@@ -51,9 +54,10 @@ function InvoiceForm() {
     createInvoice(data);
     console.log("✅ validation success", data);
     setOpen(false);
+    queryClient.invalidateQueries({ queryKey: ["invoices"] });
   };
   const onError: SubmitErrorHandler<InvoiceSchema> = (errors) => {
-    console.log("❌ validation error", errors);
+    console.error("❌ validation error", errors);
   };
 
   const { fields, append, remove } = useFieldArray({
@@ -84,7 +88,7 @@ function InvoiceForm() {
       <Dialog.Portal>
         <Dialog.Overlay className="absolute w-full h-screen bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
         <Dialog.Content>
-          <form onSubmit={handleSubmit(onSubmit, onError)}>
+          <form onSubmit={handleSubmit(onSubmit as any, onError)}>
             <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
               {/* Layout */}
               <div className="flex flex-col gap-5 overflow-auto scrollbar-hide">
@@ -189,7 +193,7 @@ function InvoiceForm() {
                       control={control}
                       render={({ field }) => (
                         <DatePicker
-                          value={field.value}
+                          value={field.value as Date}
                           onChange={field.onChange}
                         />
                       )}
@@ -311,7 +315,7 @@ function InvoiceForm() {
                       type="submit"
                       onClick={() => {
                         setValue("status", "draft");
-                        handleSubmit(onSubmit, onError);
+                        handleSubmit(onSubmit as any, onError);
                       }}
                     >
                       Save as Draft
@@ -321,7 +325,7 @@ function InvoiceForm() {
                       type="submit"
                       onClick={() => {
                         setValue("status", "pending");
-                        handleSubmit(onSubmit, onError);
+                        handleSubmit(onSubmit as any, onError);
                       }}
                     >
                       Save & Send
