@@ -576,14 +576,18 @@ function DatePicker({ value, onChange }: DatePickerProps) {
       <PopoverTrigger>
         <Button
           data-empty={!value}
-          className="flex data-[empty=true]:text-05 items-center text-nowrap justify-between bg-white border  dark:bg-03 border-05 dark:border-04 rounded-sm w-full text-08 dark:text-[#fff] max-h-[46px]"
+          className={clsx(
+            "flex data-[empty=true]:text-05 items-center text-nowrap justify-between bg-white border  dark:bg-03 hover:border-01 dark:border-04 rounded-sm w-full text-08 dark:text-[#fff] max-h-[46px]",
+            !open && "border-05",
+            open && "border-01"
+          )}
         >
           {value ? format(value, "PPP") : <span>Pick a date</span>}
           <img src={IconCalendar} alt="icon-calendar" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 border-0 shadow-none z-50 bg-[#fff] dark:bg-04"
+        className="w-auto p-0 border-0 shadow-none z-50"
         side="bottom"
       >
         <Calendar

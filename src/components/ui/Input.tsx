@@ -66,7 +66,7 @@ function Input({
         autoComplete="off"
         {...rest}
         className={clsx(
-          "h-[48px] border rounded-sm p-4 text-[15px] font-bold dark:bg-03 text-08 dark:text-[#fff] placeholder:text-08/40 dark:placeholder:text-[#fff]/40 w-full",
+          "h-[48px] border rounded-sm p-4 text-[15px] font-bold dark:bg-03 text-08 dark:text-[#fff] placeholder:text-08/40 dark:placeholder:text-[#fff]/40 w-full focus:outline-0  focus:border-01",
           !error && "border-05 dark:border-04",
           error && "border-09"
         )}
