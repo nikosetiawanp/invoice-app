@@ -46,7 +46,7 @@ function InvoiceDetailPage() {
 
       {/* Header */}
       <header className="w-full flex bg-[#fff] dark:bg-03 items-center font-medium p-6 rounded-lg bg-white shadow-[0_4px_10px_2px_#48549F0D]">
-        <div className="w-full md:w-auto flex gap-2 justify-between md:justify-start items-center">
+        <div className="w-full md:w-auto flex gap-4 justify-between md:justify-start items-center">
           <span className="text-[13px] text-07 dark:text-05">Status</span>
           {invoice?.status && <PaymentStatus status={invoice?.status} />}
         </div>
@@ -244,8 +244,8 @@ function DeleteInvoice({ id }: { id: string }) {
         <Button variant="destructive">Delete</Button>
       </Dialog.Trigger>
       <Dialog.Overlay className="fixed flex p-8 justify-center items-center left-0 top-0 z-50 w-screen h-screen bg-[#000]/50">
-        <Dialog.Content className="flex flex-col justify-start bg-[#fff] rounded-lg p-8 max-w-[480px] md:p-12">
-          <Dialog.Title className="text-[24px] text-08 font-bold text-left">
+        <Dialog.Content className="flex flex-col justify-start bg-[#fff] dark:bg-03 rounded-lg p-8 max-w-[480px] md:p-12">
+          <Dialog.Title className="text-[24px] text-08 dark:text-[#fff] font-bold text-left">
             Confirm Deletion
           </Dialog.Title>
           <Dialog.Description className="text-[13px] text-06 text-left">

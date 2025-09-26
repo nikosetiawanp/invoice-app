@@ -27,7 +27,7 @@ function Button({
         "text-[15px] font-bold py-3 px-5 rounded-full hover:cursor-pointer",
         variant === "primary" && "bg-01 hover:bg-02 text-[#fff]",
         variant === "secondary" &&
-          "bg-11 dark:bg-04 hover:bg-05 dark:hover:bg-03 text-07 dark:text-05",
+          "bg-11 dark:bg-04 hover:bg-05 dark:hover:bg-06 text-07 dark:text-05",
         variant === "tertiary" && "bg-[#373b53] text-05 hover:bg-03",
         variant === "destructive" && "bg-09 hover:bg-10 text-[#fff]",
         fullWidth && "w-full",
