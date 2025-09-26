@@ -26,7 +26,7 @@ function InvoicesPage() {
         );
 
   return (
-    <section className="flex flex-col items-center w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px]">
+    <section className="flex flex-col items-center w-full h-auto gap-8 md:gap-14 md:max-w-[675px] lg:max-w-[730px] scrollbar-hide">
       {/* Header */}
       <header className="flex justify-between w-full">
         {/* Left */}
