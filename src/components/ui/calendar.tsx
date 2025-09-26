@@ -46,7 +46,10 @@ function Calendar({
           "flex gap-4 flex-col md:flex-row relative",
           defaultClassNames.months
         ),
-        month: clsx("flex flex-col w-full gap-4", defaultClassNames.month),
+        month: clsx(
+          "flex flex-col w-full gap-4 dark:text-[#fff]",
+          defaultClassNames.month
+        ),
         nav: clsx(
           "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between",
           defaultClassNames.nav
@@ -81,13 +84,13 @@ function Calendar({
           "select-none font-medium",
           captionLayout === "label"
             ? "text-sm"
-            : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5",
+            : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground dark:text-[#fff] dark:text-[#fff] [&>svg]:size-3.5",
           defaultClassNames.caption_label
         ),
         table: "w-full border-collapse",
         weekdays: clsx("flex", defaultClassNames.weekdays),
         weekday: clsx(
-          "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none",
+          "text-muted-foreground dark:text-[#fff] dark:text-[#fff] rounded-md flex-1 font-normal text-[0.8rem] select-none",
           defaultClassNames.weekday
         ),
         week: clsx("flex w-full mt-2", defaultClassNames.week),
@@ -96,7 +99,7 @@ function Calendar({
           defaultClassNames.week_number_header
         ),
         week_number: clsx(
-          "text-[0.8rem] select-none text-muted-foreground",
+          "text-[0.8rem] select-none text-muted-foreground dark:text-[#fff] dark:text-[#fff]",
           defaultClassNames.week_number
         ),
         day: clsx(
@@ -114,11 +117,11 @@ function Calendar({
           defaultClassNames.today
         ),
         outside: clsx(
-          "text-05 aria-selected:text-muted-foreground",
+          "text-05 dark:text-05/20 aria-selected:text-muted-foreground dark:text-[#fff] dark:text-[#fff]",
           defaultClassNames.outside
         ),
         disabled: clsx(
-          "text-muted-foreground opacity-50",
+          "text-muted-foreground dark:text-[#fff] dark:text-[#fff] opacity-50",
           defaultClassNames.disabled
         ),
         hidden: clsx("invisible", defaultClassNames.hidden),
@@ -139,7 +142,7 @@ function Calendar({
           if (orientation === "left") {
             return (
               <ChevronLeftIcon
-                className={clsx("size-4", className)}
+                className={clsx("size-4 dark:stroke-[#fff]", className)}
                 {...props}
               />
             );
@@ -148,7 +151,7 @@ function Calendar({
           if (orientation === "right") {
             return (
               <ChevronRightIcon
-                className={clsx("size-4", className)}
+                className={clsx("size-4 dark:stroke-[#fff]", className)}
                 {...props}
               />
             );
@@ -204,7 +207,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={clsx(
-        "data-[outside=true]:text-05 data-[selected-single=true]:bg-02 data-[selected-single=true]:text-[#fff] data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-bold group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
+        "data-[outside=true]:text-05 dark:data-[outside=true]:text-05/20 data-[selected-single=true]:bg-02 data-[selected-single=true]:text-[#fff] dark:text-[#fff] data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-bold group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
         "hover:cursor-pointer hover:text-01",
         defaultClassNames.day,
         className

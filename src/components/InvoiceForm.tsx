@@ -4,7 +4,6 @@ import clsx from "clsx";
 
 import IconPlus from "../assets/icon-plus.svg";
 import IconArrowDown from "../assets/icon-arrow-down.svg";
-import IconDelete from "../assets/icon-delete.svg";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
@@ -123,17 +122,17 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
         <Dialog.Overlay className="fixed w-screen h-full bg-[#000]/50 top-[72px] md:top-[80px] lg:left-0 lg:top-0" />
         <Dialog.Content>
           <form onSubmit={handleSubmit(onSubmit as any, onError)}>
-            <div className="fixed left-0 top-0 bg-[#fff] flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
+            <div className="fixed left-0 top-0 bg-[#fff] dark:bg-12 flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
               {/* Layout */}
               <div className="flex flex-col gap-5 overflow-auto scrollbar-hide pb-20 md:pb-0">
                 {mode === "create" && (
-                  <Dialog.Title className="text-[24px] font-bold text-08">
+                  <Dialog.Title className="text-[24px] font-bold text-08 dark:text-[#fff]">
                     New Invoice
                   </Dialog.Title>
                 )}
 
                 {mode === "update" && (
-                  <Dialog.Title className="text-[24px] font-bold text-08">
+                  <Dialog.Title className="text-[24px] font-bold text-08 dark:text-[#fff]">
                     Edit <b className="text-06">#</b>
                     {invoice?.id}
                   </Dialog.Title>
@@ -264,10 +263,16 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                 <div className="grid grid-cols-[1fr_2fr_1fr_1fr] md:grid-cols-[4fr_2fr_3fr_1fr_1fr] gap-4">
                   {screenWidth >= 768 && (
                     <React.Fragment>
-                      <span className="text-[13px] text-07">Item Name</span>
-                      <span className="text-[13px] text-07">Qty.</span>
-                      <span className="text-[13px] text-07">Price</span>
-                      <span className="text-[13px] text-07 text-left">
+                      <span className="text-[13px] text-07 dark:text-06">
+                        Item Name
+                      </span>
+                      <span className="text-[13px] text-07 dark:text-06">
+                        Qty.
+                      </span>
+                      <span className="text-[13px] text-07 dark:text-06">
+                        Price
+                      </span>
+                      <span className="text-[13px] text-07 dark:text-06 text-left">
                         Total
                       </span>
                       <span className=""></span>
@@ -317,11 +322,11 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                           hideErrorMessage
                         />
                         <div className="flex flex-col gap-2">
-                          <span className="text-[13px] text-07 md:hidden">
+                          <span className="text-[13px] text-07 dark:text-06 md:hidden">
                             Total
                           </span>
                           <div className="flex h-full items-center">
-                            <span className="text-[15px] text-07 font-bold">
+                            <span className="text-[15px] text-07 dark:text-06 font-bold">
                               {items?.[index]?.price *
                                 items?.[index]?.quantity || 0}
                             </span>
@@ -423,7 +428,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                 )}
 
                 {/* Mobile */}
-                <div className="bg-[#fff] md:hidden w-screen p-4 fixed left-0 bottom-0 drop-shadow-2xl flex">
+                <div className="bg-[#fff] dark:bg-03 md:hidden w-screen p-4 fixed left-0 bottom-0 drop-shadow-2xl flex">
                   {mode === "create" && (
                     <div className="flex justify-end gap-4 w-full">
                       <Dialog.Close asChild>
@@ -513,7 +518,7 @@ function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
         </label>
         <Select.Trigger
           className={clsx(
-            "flex justify-between items-center h-[48px] border border-05 rounded-sm p-4 text-[15px] font-bold text-08 placeholder:text-08/40 w-full hover:cursor-pointer hover:border-01"
+            "flex justify-between items-center h-[48px] border border-05 dark:border-04 dark:bg-03 rounded-sm p-4 text-[15px] font-bold text-08 dark:text-[#fff] placeholder:text-08/40 w-full hover:cursor-pointer hover:border-01"
           )}
         >
           <Select.Value />
@@ -529,7 +534,7 @@ function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
       <Select.Portal>
         <Select.Content
           position="popper"
-          className="bg-[#fff] rounded-lg shadow-xl min-w-[var(--radix-select-trigger-width)]"
+          className="bg-[#fff] dark:bg-04 rounded-lg shadow-xl min-w-[var(--radix-select-trigger-width)]"
         >
           <Select.Viewport>
             <Select.Group>
@@ -539,14 +544,14 @@ function SelectPaymentTerm({ field }: SelectPaymentTermProps) {
                     <Select.Item
                       value={term.toString()}
                       className={clsx(
-                        "py-3 px-5 font-bold text-08 hover:text-01 hover:cursor-pointer",
-                        "data-[state=checked]:text-01"
+                        "py-3 px-5 font-bold text-08 dark:text-05 hover:text-01 dark:hover:text-02 hover:cursor-pointer",
+                        "data-[state=checked]:text-01 dark:data-[state=checked]:text-02"
                       )}
                     >
                       <Select.ItemText>Net {term} days</Select.ItemText>
                     </Select.Item>
                     {index < 3 && (
-                      <Select.Separator className="h-[1px] bg-05" />
+                      <Select.Separator className="h-[1px] bg-05 dark:bg-03" />
                     )}
                   </React.Fragment>
                 );
@@ -571,14 +576,14 @@ function DatePicker({ value, onChange }: DatePickerProps) {
       <PopoverTrigger>
         <Button
           data-empty={!value}
-          className="flex data-[empty=true]:text-05 items-center text-nowrap justify-between bg-white border border-05 rounded-sm w-full text-08 max-h-[46px]"
+          className="flex data-[empty=true]:text-05 items-center text-nowrap justify-between bg-white border  dark:bg-03 border-05 dark:border-04 rounded-sm w-full text-08 dark:text-[#fff] max-h-[46px]"
         >
           {value ? format(value, "PPP") : <span>Pick a date</span>}
           <img src={IconCalendar} alt="icon-calendar" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 border-0 shadow-none z-50 bg-[#fff]"
+        className="w-auto p-0 border-0 shadow-none z-50 bg-[#fff] dark:bg-04"
         side="bottom"
       >
         <Calendar

@@ -48,7 +48,7 @@ function Input({
           htmlFor={id}
           className={clsx(
             "text-[13px]",
-            !error && "text-07",
+            !error && "text-07 dark:text-06",
             error && "text-09"
           )}
         >
@@ -66,8 +66,8 @@ function Input({
         autoComplete="off"
         {...rest}
         className={clsx(
-          "h-[48px] border rounded-sm p-4 text-[15px] font-bold text-08 placeholder:text-08/40 w-full",
-          !error && "border-05",
+          "h-[48px] border rounded-sm p-4 text-[15px] font-bold dark:bg-03 text-08 dark:text-[#fff] placeholder:text-08/40 dark:placeholder:text-[#fff]/40 w-full",
+          !error && "border-05 dark:border-04",
           error && "border-09"
         )}
       />

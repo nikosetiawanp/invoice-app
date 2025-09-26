@@ -37,7 +37,7 @@ function InvoiceDetailPage() {
       {/* Navigation */}
       <div className="flex">
         <Link
-          className="flex items-center gap-4 text-[15px] font-bold text-08"
+          className="flex items-center gap-4 text-[15px] font-bold text-08 dark:text-[#fff]"
           to={"/invoices"}
         >
           <img src={IconArrowLeft} alt="icon-arrow-left" /> Go back
@@ -45,9 +45,9 @@ function InvoiceDetailPage() {
       </div>
 
       {/* Header */}
-      <header className="w-full flex bg-[#fff] items-center text-07 font-medium p-6 rounded-lg bg-white shadow-[0_4px_10px_2px_#48549F0D]">
+      <header className="w-full flex bg-[#fff] dark:bg-03 items-center font-medium p-6 rounded-lg bg-white shadow-[0_4px_10px_2px_#48549F0D]">
         <div className="w-full md:w-auto flex gap-2 justify-between md:justify-start items-center">
-          <span className="text-[13px]">Status</span>
+          <span className="text-[13px] text-07 dark:text-05">Status</span>
           {invoice?.status && <PaymentStatus status={invoice?.status} />}
         </div>
         <div className="ml-auto gap-2 hidden md:flex">
@@ -69,12 +69,12 @@ function InvoiceDetailPage() {
       </header>
 
       {/* The Invoice */}
-      <div className="w-full flex bg-[#fff] flex-col font-medium gap-6 p-8 rounded-lg bg-white shadow-[0_4px_10px_2px_#48549F0D]">
+      <div className="w-full flex bg-[#fff] dark:bg-03 flex-col font-medium gap-6 p-8 rounded-lg bg-white shadow-[0_4px_10px_2px_#48549F0D]">
         {/* Invoice Header */}
         <div className="flex flex-col gap-8 md:flex-row justify-between items-start">
           {/* Left */}
           <div className="flex flex-col gap-2">
-            <span className="text-08 text-[15px] font-bold">
+            <span className="text-08 dark:text-[#fff] text-[15px] font-bold">
               <b className="text-06">#</b>
               {invoice?.id}
             </span>
@@ -102,14 +102,14 @@ function InvoiceDetailPage() {
           {/* Invoice Date */}
           <div className="flex flex-col gap-1 col-start-1 row-start-1">
             <span className="text-[13px] text-07">Invoice Date</span>
-            <span className="text-[15px] font-bold text-08">
+            <span className="text-[15px] font-bold text-08 dark:text-[#fff]">
               {invoice?.createdAt && format(invoice?.createdAt, "dd MMM yyyy")}
             </span>
           </div>
           {/* Payment Due */}
           <div className="flex flex-col gap-1 col-start-1 row-start-2">
             <span className="text-[13px] text-07">Payment Due</span>
-            <span className="text-[15px] font-bold text-08">
+            <span className="text-[15px] font-bold text-08 dark:text-[#fff]">
               {invoice?.createdAt &&
                 format(
                   calculateDueDate(invoice?.createdAt, invoice?.paymentTerms),
@@ -119,7 +119,7 @@ function InvoiceDetailPage() {
           </div>
           <div className="flex flex-col gap-1 col-start-2 row-span-2">
             <span className="text-[13px] text-07">Bill To</span>
-            <span className="text-[15px] text-08 font-bold">
+            <span className="text-[15px] text-08 dark:text-[#fff] font-bold">
               {invoice?.clientName}
             </span>
             <div className="flex flex-col gap-0">
@@ -139,28 +139,28 @@ function InvoiceDetailPage() {
           </div>
           <div className="flex flex-col gap-1 col-span-2 row-start-3 md:col-start-3 md:col-span-1 md:row-start-1">
             <span className="text-[13px] text-07">Sent to</span>
-            <span className="text-[15px] text-08 font-bold">
+            <span className="text-[15px] text-08 dark:text-[#fff] font-bold">
               {invoice?.clientEmail}
             </span>
           </div>
         </div>
 
         {/* Totals */}
-        <div className="flex flex-col rounded-lg bg-11">
+        <div className="flex flex-col rounded-lg bg-11 dark:bg-04">
           {/* Items Mobile */}
           <div className="flex flex-col p-4 gap-4 md:hidden">
             {invoice?.items?.map((item, index) => {
               return (
                 <div key={index} className="flex justify-between items-center">
                   <div className="flex flex-col">
-                    <span className="text-[15px] text-08 font-bold">
+                    <span className="text-[15px] text-08 dark:text-[#fff] font-bold">
                       {item.name}
                     </span>
                     <span className="text-[15px] text-07 font-bold">
                       £ {item.quantity} x {item.price}
                     </span>
                   </div>
-                  <span className="text-[15px] text-08 font-bold">
+                  <span className="text-[15px] text-08 dark:text-[#fff] font-bold">
                     £ {item.quantity * item.price}
                   </span>
                 </div>
@@ -169,15 +169,17 @@ function InvoiceDetailPage() {
           </div>
 
           {/* Items Tablet & Desktop */}
-          <div className="grid-cols-4 p-4 gap-4 hidden md:grid">
-            <span className="text-[13px] text-07 font-medium">Item Name</span>
-            <span className="text-[13px] text-07 font-medium text-center">
+          <div className="grid-cols-4 p-4 md:p-6 gap-4 hidden md:grid">
+            <span className="text-[13px] text-07 dark:text-05 font-medium">
+              Item Name
+            </span>
+            <span className="text-[13px] text-07 dark:text-05 font-medium text-center">
               QTY.
             </span>
-            <span className="text-[13px] text-07 font-medium text-right">
+            <span className="text-[13px] text-07 dark:text-05 font-medium text-right">
               Price
             </span>
-            <span className="text-[13px] text-07 font-medium text-right">
+            <span className="text-[13px] text-07 dark:text-05 font-medium text-right">
               Total
             </span>
 
@@ -185,16 +187,16 @@ function InvoiceDetailPage() {
             {invoice?.items?.map((item, index) => {
               return (
                 <React.Fragment key={index}>
-                  <span className="text-[15px] font-bold text-08">
+                  <span className="text-[15px] font-bold text-08 dark:text-[#fff]">
                     {item.name}
                   </span>
-                  <span className="text-[15px] text-07 font-bold text-center">
+                  <span className="text-[15px] text-07 dark:text-05 font-bold text-center">
                     {item.quantity}
                   </span>
-                  <span className="text-[15px] text-07 font-bold text-right">
+                  <span className="text-[15px] text-07 dark:text-05 font-bold text-right">
                     £ {item.price}
                   </span>
-                  <span className="text-[15px] text-08 font-bold text-right">
+                  <span className="text-[15px] text-08 dark:text-[#fff] font-bold text-right">
                     £ {item.quantity * item.price}
                   </span>
                 </React.Fragment>
@@ -202,8 +204,8 @@ function InvoiceDetailPage() {
             })}
           </div>
 
-          <div className="flex justify-between items-center p-4 bg-04 rounded-b-lg">
-            <span className="text-[13px] text-[#fff]">Grand Total</span>
+          <div className="flex justify-between items-center p-4 bg-04 dark:bg-08 rounded-b-lg">
+            <span className="text-[13px] text-[#fff]">Amount Due</span>
             <span className="text-[24px] text-[#fff] font-bold">
               £{" "}
               {invoice?.items
@@ -215,7 +217,7 @@ function InvoiceDetailPage() {
       </div>
 
       {/* Bottom bar */}
-      <div className="bg-[#fff] md:hidden w-full p-4 fixed bottom-0 left-0 shadow-2xl">
+      <div className="bg-[#fff] dark:bg-03 md:hidden w-full p-4 fixed bottom-0 left-0 shadow-2xl">
         <div className="fw-full gap-2 flex justify-center md:hidden">
           <InvoiceForm mode="update" invoice={invoice} />
           <DeleteInvoice id={id || ""} />

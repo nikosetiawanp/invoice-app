@@ -26,7 +26,7 @@ function Sidebar() {
   }, [theme]);
 
   return (
-    <aside className="fixed left-0 top-0 z-50 flex lg:flex-col h-[72px] md:h-[80px] lg:h-full w-full lg:w-[100px] lg:rounded-r-[20px] bg-[#373B53]">
+    <aside className="fixed left-0 top-0 z-100 flex lg:flex-col h-[72px] md:h-[80px] lg:h-screen w-screen lg:w-[100px] lg:rounded-r-[20px] bg-[#373B53]">
       {/* Logo */}
       <div className="relative bg-01 rounded-r-[20px] h-[72px] md:h-[80px] lg:h-[100px] w-[72px] md:w-[80px] lg:w-[100px] flex flex-col justify-between">
         <div></div>
@@ -39,7 +39,6 @@ function Sidebar() {
       </div>
 
       <div className="flex items-center px-6 lg:px-0 lg:w-full lg:py-8 gap-6 lg:gap-8 lg:flex-col lg:items-center ml-auto lg:mt-auto">
-        <span className="text-[#fff] dark:text-[#000]">{theme}</span>
         {/* Toggle theme */}
         <button
           className="hover:cursor-pointer w-[20px] h-[20px] group"

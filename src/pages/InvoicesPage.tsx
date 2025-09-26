@@ -31,7 +31,7 @@ function InvoicesPage() {
       <header className="flex justify-between w-full">
         {/* Left */}
         <div className="flex flex-col h-auto">
-          <span className="text-[24px] md:text-[36px] font-bold text-08">
+          <span className="text-[24px] md:text-[36px] font-bold text-08 dark:text-[#fff]">
             Invoices
           </span>
 
@@ -39,7 +39,7 @@ function InvoicesPage() {
           <span className="text-body text-06 md:hidden">7 invoices</span>
           {/* Text Desktop */}
           <span className="text-body text-06 hidden md:block">
-            There are {query.data?.length} total invoices
+            There are {filteredInvoices?.length} total invoices
           </span>
         </div>
         {/* Right */}
@@ -64,8 +64,8 @@ function InvoicesPage() {
           return (
             <Link key={index} to={"/invoices/" + invoice.id}>
               {/* Tablet & Desktop */}
-              <div className="hidden md:flex items-center gap-8 rounded-lg p-4 w-full bg-[#fff] shadow-[0_10px_10px_10px_#48549F0D] border border-[#fff]  hover:border-01  hover:cursor-pointer">
-                <span className="text-[15px] font-bold text-08 w-[80px]">
+              <div className="hidden md:flex items-center gap-8 rounded-lg p-4 w-full bg-[#fff] dark:bg-03 shadow-[0_10px_10px_10px_#48549F0D] border border-[#fff] dark:border-03 hover:border-01  hover:cursor-pointer">
+                <span className="text-[15px] font-bold text-08 dark:text-[#fff] w-[80px]">
                   <b className="text-07">#</b>
                   {invoice.id}
                 </span>
@@ -77,10 +77,10 @@ function InvoicesPage() {
                       "dd MMM yyyy"
                     )}
                 </span>
-                <span className="text-[13px] text-06 font-medium">
+                <span className="text-[13px] text-06 dark:text-05 font-medium">
                   {invoice.clientName}
                 </span>
-                <span className="text-[15px] font-bold text-08 ml-auto">
+                <span className="text-[15px] font-bold text-08 dark:text-[#fff] ml-auto">
                   £ {total}
                 </span>
                 <PaymentStatus
@@ -90,14 +90,15 @@ function InvoicesPage() {
               </div>
 
               {/* Mobile */}
-              <div className="md:hidden flex justify-between items-center gap-8 rounded-lg p-4 w-full bg-[#fff] shadow-[0_10px_10px_10px_#48549F0D] border border-[#fff]  hover:border-01  hover:cursor-pointer">
+              <div className="md:hidden flex justify-between items-center gap-8 rounded-lg p-4 w-full bg-[#fff] dark:bg-03 shadow-[0_10px_10px_10px_#48549F0D] border border-[#fff] dark:border-03  hover:border-01  hover:cursor-pointer">
                 {/* Left */}
                 <div className="flex flex-col gap-2">
-                  <span className="text-[15px] font-bold text-08">
+                  <span className="text-[15px] font-bold text-08 dark:text-[#fff]">
                     <b className="text-07">#</b>
                     {invoice.id}
                   </span>
-                  <span className="text-[13px] text-06 font-medium">
+                  <span className="text-[13px] text-06 dark:text-05 font-medium">
+                    Due{" "}
                     {invoice?.createdAt &&
                       format(
                         calculateDueDate(
@@ -107,7 +108,7 @@ function InvoicesPage() {
                         "dd MMM yyyy"
                       )}
                   </span>
-                  <span className="text-[15px] font-bold text-08">
+                  <span className="text-[15px] font-bold text-08 dark:text-[#fff]">
                     £{" "}
                     {invoice?.items
                       .map((item) => item.quantity * item.price)
@@ -117,7 +118,7 @@ function InvoicesPage() {
 
                 {/* Right */}
                 <div className="flex flex-col items-end gap-6">
-                  <span className="text-[13px] text-06 font-medium">
+                  <span className="text-[13px] text-06 dark:text-[#fff] font-medium">
                     {invoice.clientName}
                   </span>
                   <PaymentStatus
@@ -143,10 +144,10 @@ function InvoicesPage() {
             src={IllustrationEmpty}
             alt="illustration-empty"
           />
-          <span className="text-heading-m text-08 text-center">
+          <span className="text-heading-m text-08 dark:text-[#fff] text-center">
             There is nothing here
           </span>
-          <span className="text-body text-06 text-center">
+          <span className="text-body text-06 dark:text-05 text-center">
             Create an invoice by clicking the <b>New Invoice</b> button and get
             started
           </span>
@@ -167,7 +168,7 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
   return (
     <DropdownMenu.Root onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenu.Trigger>
-        <div className="text-08 text-heading-s flex items-center gap-4 hover:cursor-pointer">
+        <div className="text-08 dark:text-[#fff] text-heading-s flex items-center gap-4 hover:cursor-pointer">
           <span className="hidden lg:block">Filter by status</span>
           <span className="lg:hidden">Filter</span>
           <img
@@ -178,7 +179,7 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className="bg-[#fff] p-6 rounded-lg shadow-xl flex flex-col gap-2 w-[200px]">
+        <DropdownMenu.Content className="bg-[#fff] dark:bg-04 p-6 rounded-lg shadow-xl flex flex-col gap-2 w-[200px]">
           {filters.map((filter, index) => {
             const checked = appliedFilters.includes(filter);
             const applyFilter = () => {
@@ -203,12 +204,13 @@ function Filter({ appliedFilters, setAppliedFilters }: FilterProps) {
                   className={clsx(
                     "w-[16px] h-[16px] rounded-[2px] flex items-center justify-center border",
                     checked && "border-01 bg-01",
-                    !checked && "bg-05 border-05 group-hover:border-01"
+                    !checked &&
+                      "bg-05 dark:bg-03 border-05 dark:border-04 group-hover:border-01"
                   )}
                 >
                   {checked && <img src={IconCheck} alt="icon-check" />}
                 </div>
-                <span className="text-[15px] font-bold mt-1">
+                <span className="text-[15px] text-03 dark:text-[#fff] font-bold mt-1">
                   {filter.charAt(0).toUpperCase() + filter.slice(1)}
                 </span>
               </DropdownMenu.Item>
