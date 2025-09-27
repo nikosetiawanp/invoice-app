@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { Sidebar } from "./components/Sidebar";
 
@@ -15,6 +15,7 @@ function App() {
       <div className="flex justify-center w-full h-auto py-8 pb-26 md:pb-12 pt-[104px] px-6 md:py-12 md:pt-[128px] lg:py-16 lg:pl-[124px]">
         <QueryClientProvider client={new QueryClient()}>
           <Routes>
+            <Route path="/" element={<Navigate to="/invoices" replace />} />
             <Route path="/invoices/" element={<InvoicesPage />} />
             <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
           </Routes>
