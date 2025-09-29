@@ -124,7 +124,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
           <form onSubmit={handleSubmit(onSubmit as any, onError)}>
             <div className="fixed left-0 top-0 bg-[#fff] dark:bg-12 flex flex-col p-6 pt-[96px] md:p-12 md:pt-[128px] lg:pl-[148px] lg:pt-12 md:rounded-r-[20px] w-full md:w-[615px] lg:w-[720px] h-screen">
               {/* Layout */}
-              <div className="flex flex-col gap-5 overflow-auto scrollbar-hide pb-20 md:pb-0">
+              <div className="flex flex-col gap-5 overflow-auto scrollbar-hide pb-40 md:pb-0">
                 {mode === "create" && (
                   <Dialog.Title className="text-[24px] font-bold text-08 dark:text-[#fff]">
                     New Invoice
@@ -362,7 +362,6 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                   variant="secondary"
                   onClick={() => append({ name: "", quantity: 0, price: 0 })}
                   fullWidth
-                  className={clsx("mb-20 md:mb-0")}
                 >
                   + Add New Item
                 </Button>
