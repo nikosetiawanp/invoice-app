@@ -430,7 +430,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                 {/* Mobile */}
                 <div className="bg-[#fff] dark:bg-03 md:hidden w-screen p-4 fixed left-0 bottom-0 drop-shadow-2xl flex">
                   {mode === "create" && (
-                    <div className="flex justify-end gap-4 w-full">
+                    <div className="flex justify-center max-[375px]:gap-1 gap-2 w-full">
                       <Dialog.Close asChild>
                         <Button
                           variant="secondary"
@@ -439,7 +439,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                           Discard
                         </Button>
                       </Dialog.Close>
-                      <div className="flex gap-4">
+                      <div className="flex max-[375px]:gap-1 gap-2">
                         <Button
                           variant="tertiary"
                           type="submit"

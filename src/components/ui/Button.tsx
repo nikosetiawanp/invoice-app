@@ -24,7 +24,7 @@ function Button({
   return (
     <button
       className={clsx(
-        "text-[15px] font-bold py-3 px-5 rounded-full hover:cursor-pointer",
+        "text-[15px] font-bold py-3 px-5 rounded-full hover:cursor-pointer text-nowrap",
         variant === "primary" && "bg-01 hover:bg-02 text-[#fff]",
         variant === "secondary" &&
           "bg-11 dark:bg-04 hover:bg-05 dark:hover:bg-06 text-07 dark:text-05",
