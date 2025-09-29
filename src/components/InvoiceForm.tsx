@@ -257,109 +257,112 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                   error={errors.description}
                 />
 
-                <span className="text-[#777f98] text-[18px] font-bold">
+                <span className="col-span-4 text-[#777f98] text-[18px] font-bold">
                   Item List
                 </span>
-                <div className="grid grid-cols-[1fr_2fr_1fr_1fr] md:grid-cols-[4fr_2fr_3fr_1fr_1fr] gap-4">
-                  {screenWidth >= 768 && (
-                    <React.Fragment>
-                      <span className="text-[13px] text-07 dark:text-06">
-                        Item Name
-                      </span>
-                      <span className="text-[13px] text-07 dark:text-06">
-                        Qty.
-                      </span>
-                      <span className="text-[13px] text-07 dark:text-06">
-                        Price
-                      </span>
-                      <span className="text-[13px] text-07 dark:text-06 text-left">
-                        Total
-                      </span>
-                      <span className=""></span>
-                    </React.Fragment>
-                  )}
+                {fields.length > 0 && (
+                  <div className="grid grid-cols-[1fr_2fr_1fr_1fr] md:grid-cols-[4fr_2fr_3fr_1fr_1fr] gap-4">
+                    {screenWidth >= 768 && (
+                      <React.Fragment>
+                        <span className="text-[13px] text-07 dark:text-06">
+                          Item Name
+                        </span>
+                        <span className="text-[13px] text-07 dark:text-06">
+                          Qty.
+                        </span>
+                        <span className="text-[13px] text-07 dark:text-06">
+                          Price
+                        </span>
+                        <span className="text-[13px] text-07 dark:text-06 text-left">
+                          Total
+                        </span>
+                        <span className=""></span>
+                      </React.Fragment>
+                    )}
 
-                  {fields.map((field, index) => {
-                    return (
-                      <React.Fragment key={index}>
-                        <div
-                          className={clsx(
-                            "col-span-4 md:col-span-1",
-                            index > 0 && "mt-4 md:mt-0"
-                          )}
-                        >
+                    {fields.map((field, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <div
+                            className={clsx(
+                              "col-span-4 md:col-span-1",
+                              index > 0 && "mt-4 md:mt-0"
+                            )}
+                          >
+                            <Input
+                              id={"item-name"}
+                              type={"text"}
+                              label={screenWidth < 768 ? "Item Name" : ""}
+                              {...register(`items.${index}.name` as const)}
+                              defaultValue={field.name}
+                              error={errors.items?.[index]?.name}
+                              hideErrorMessage
+                            />
+                          </div>
                           <Input
-                            id={"item-name"}
-                            type={"text"}
-                            label={screenWidth < 768 ? "Item Name" : ""}
-                            {...register(`items.${index}.name` as const)}
-                            defaultValue={field.name}
-                            error={errors.items?.[index]?.name}
+                            id={"quantity"}
+                            type={"number"}
+                            label={screenWidth < 768 ? "Qty." : ""}
+                            {...register(`items.${index}.quantity` as const, {
+                              valueAsNumber: true,
+                            })}
+                            defaultValue={field.quantity}
+                            error={errors.items?.[index]?.quantity}
                             hideErrorMessage
                           />
-                        </div>
-                        <Input
-                          id={"quantity"}
-                          type={"number"}
-                          label={screenWidth < 768 ? "Qty." : ""}
-                          {...register(`items.${index}.quantity` as const, {
-                            valueAsNumber: true,
-                          })}
-                          defaultValue={field.quantity}
-                          error={errors.items?.[index]?.quantity}
-                          hideErrorMessage
-                        />
-                        <Input
-                          id={"price"}
-                          type={"number"}
-                          label={screenWidth < 768 ? "Price" : ""}
-                          placeholder="0.00"
-                          {...register(`items.${index}.price` as const, {
-                            valueAsNumber: true,
-                          })}
-                          defaultValue={field.price}
-                          error={errors.items?.[index]?.price}
-                          hideErrorMessage
-                        />
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[13px] text-07 dark:text-06 md:hidden">
-                            Total
-                          </span>
-                          <div className="flex h-full items-center">
-                            <span className="text-[15px] text-07 dark:text-06 font-bold">
-                              {items?.[index]?.price *
-                                items?.[index]?.quantity || 0}
+                          <Input
+                            id={"price"}
+                            type={"number"}
+                            label={screenWidth < 768 ? "Price" : ""}
+                            placeholder="0.00"
+                            {...register(`items.${index}.price` as const, {
+                              valueAsNumber: true,
+                            })}
+                            defaultValue={field.price}
+                            error={errors.items?.[index]?.price}
+                            hideErrorMessage
+                          />
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[13px] text-07 dark:text-06 md:hidden">
+                              Total
                             </span>
+                            <div className="flex h-full items-center">
+                              <span className="text-[15px] text-07 dark:text-06 font-bold">
+                                {items?.[index]?.price *
+                                  items?.[index]?.quantity || 0}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex justify-center items-end h-full pb-2">
-                          <button
-                            className="group hover:cursor-pointer p-3 rounded-full"
-                            onClick={() => remove(index)}
-                          >
-                            <svg
-                              width="13"
-                              height="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="fill-06 group-hover:fill-09"
+                          <div className="flex justify-center items-end h-full pb-2">
+                            <button
+                              className="group hover:cursor-pointer p-3 rounded-full"
+                              onClick={() => remove(index)}
                             >
-                              <path
-                                d="M11.583 3.556v10.666c0 .982-.795 1.778-1.777 1.778H2.694a1.777 1.777 0 01-1.777-1.778V3.556h10.666zM8.473 0l.888.889h3.111v1.778H.028V.889h3.11L4.029 0h4.444z"
-                                fill=""
-                                fill-rule="nonzero"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
+                              <svg
+                                width="13"
+                                height="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="fill-06 group-hover:fill-09"
+                              >
+                                <path
+                                  d="M11.583 3.556v10.666c0 .982-.795 1.778-1.777 1.778H2.694a1.777 1.777 0 01-1.777-1.778V3.556h10.666zM8.473 0l.888.889h3.111v1.778H.028V.889h3.11L4.029 0h4.444z"
+                                  fill=""
+                                  fill-rule="nonzero"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                )}
 
                 <Button
                   variant="secondary"
                   onClick={() => append({ name: "", quantity: 0, price: 0 })}
                   fullWidth
+                  className=""
                 >
                   + Add New Item
                 </Button>
