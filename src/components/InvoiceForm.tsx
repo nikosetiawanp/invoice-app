@@ -225,7 +225,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                 </div>
 
                 {/* Invoice Date & Payment Terms */}
-                <div className="flex gap-5">
+                <div className="flex flex-col md:flex-row gap-5 w-full">
                   <div className="flex flex-col gap-2 w-full">
                     <label htmlFor={""} className="text-[13px] text-06">
                       Invoice Date
@@ -584,7 +584,7 @@ function DatePicker({ value, onChange }: DatePickerProps) {
             open && "border-01"
           )}
         >
-          {value ? format(value, "PPP") : <span>Pick a date</span>}
+          <span>{value ? format(value, "PPP") : <span>Pick a date</span>}</span>
           <img src={IconCalendar} alt="icon-calendar" />
         </Button>
       </PopoverTrigger>
