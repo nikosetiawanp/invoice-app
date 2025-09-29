@@ -54,9 +54,9 @@ Users should be able to:
 
 ### What I learned
 
-- I learned on how to use react-hook-form dynamic input and controlled input
-- How to implement shadcn datepicker into my own project and customize its color
-- How to use localstorage alongside Tanstack Query for live update
+- Learned to use react-hook-form with dynamic and controlled inputs.
+- Implemented and customized shadcn datepicker.
+- Used localStorage with TanStack Query for live updates.
 
 ### Continued development
 
