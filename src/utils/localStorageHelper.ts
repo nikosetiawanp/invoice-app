@@ -36,7 +36,7 @@ function deleteInvoice(id: string) {
 
   localStorage.setItem("invoices", JSON.stringify(updated));
 
-  window.location.href = "/invoices";
+  window.location.href = "/";
 }
 
 function updateInvoice(updatedInvoice: InvoiceSchema) {
