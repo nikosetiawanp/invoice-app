@@ -362,7 +362,7 @@ function InvoiceForm({ mode, invoice }: InvoiceFormProps) {
                   variant="secondary"
                   onClick={() => append({ name: "", quantity: 0, price: 0 })}
                   fullWidth
-                  className=""
+                  className={clsx("mb-20 md:mb-0")}
                 >
                   + Add New Item
                 </Button>
